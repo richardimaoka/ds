@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="238px" height="374px" viewBox="0 0 238 374" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.7 (28169) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 6</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="102" width="238" height="263"></rect>
+        <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="238" height="263" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+        <rect id="path-3" x="0" y="57" width="216" height="240"></rect>
+        <mask id="mask-4" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="216" height="240" fill="white">
+            <use xlink:href="#path-3"></use>
+        </mask>
+        <rect id="path-5" x="9" y="67" width="117" height="219"></rect>
+        <mask id="mask-6" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="117" height="219" fill="white">
+            <use xlink:href="#path-5"></use>
+        </mask>
+        <rect id="path-7" x="135" y="67" width="29" height="219"></rect>
+        <mask id="mask-8" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="29" height="219" fill="white">
+            <use xlink:href="#path-7"></use>
+        </mask>
+        <rect id="path-9" x="176" y="68" width="29" height="219"></rect>
+        <mask id="mask-10" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="29" height="219" fill="white">
+            <use xlink:href="#path-9"></use>
+        </mask>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-6" transform="translate(0.000000, 9.000000)">
+            <g id="Group-5">
+                <use id="Rectangle-5" stroke="#979797" mask="url(#mask-2)" stroke-width="2" fill="#D8D8D8" xlink:href="#path-1"></use>
+                <g id="Group-4" transform="translate(11.000000, 0.000000)">
+                    <g id="Group-2">
+                        <path d="M183.5,-0.5 L185,1" id="Line" stroke="#979797" stroke-linecap="square"></path>
+                        <path id="Line-decoration-1" d="M185,1 L179.484567,-8.75807358 L175.241926,-4.51543289 L185,1 Z" stroke="#979797" stroke-linecap="square"></path>
+                        <g id="Group-3" transform="translate(0.000000, 58.000000)">
+                            <g id="Group">
+                                <use id="Rectangle-3" stroke="#979797" mask="url(#mask-4)" stroke-width="2" fill="#FFFFFF" xlink:href="#path-3"></use>
+                                <use id="Rectangle-8" stroke="#979797" mask="url(#mask-6)" stroke-width="2" fill="#9CD233" xlink:href="#path-5"></use>
+                                <use id="Rectangle-6" stroke="#979797" mask="url(#mask-8)" stroke-width="2" fill="#0CB7E1" xlink:href="#path-7"></use>
+                                <use id="Rectangle-6" stroke="#979797" mask="url(#mask-10)" stroke-width="2" fill="#0CB7E1" xlink:href="#path-9"></use>
+                                <path d="M2.5,18 L214.5,18" id="Line" stroke="#979797" stroke-width="4" stroke-linejoin="round"></path>
+                                <path id="Line-decoration-1" d="M2.5,18 L13.3,15 L13.3,21 L2.5,18 Z" stroke="#979797" stroke-width="4" stroke-linejoin="round"></path>
+                                <path id="Line-decoration-2" d="M214.5,18 L203.7,15 L203.7,21 L214.5,18 Z" stroke="#979797" stroke-width="4" stroke-linejoin="round"></path>
+                                <text id="New-Gen" font-family="Arial-BoldMT, Arial" font-size="14" font-weight="bold" fill="#000000">
+                                    <tspan x="68" y="13">New Gen</tspan>
+                                </text>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+                <text id="S0-" font-family="Arial-BoldMT, Arial" font-size="14" font-weight="bold" fill="#000000">
+                    <tspan x="154" y="232">S0 </tspan>
+                </text>
+                <text id="S1-" font-family="Arial-BoldMT, Arial" font-size="14" font-weight="bold" fill="#000000">
+                    <tspan x="193" y="232">S1 </tspan>
+                </text>
+            </g>
+            <text id="Eden" font-family="Arial-BoldMT, Arial" font-size="14" font-weight="bold" fill="#000000">
+                <tspan x="62" y="232">Eden</tspan>
+            </text>
+        </g>
+    </g>
+</svg>

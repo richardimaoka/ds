@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="206px" height="28px" viewBox="0 0 206 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.4.2 (15855) - http://www.bohemiancoding.com/sketch -->
+    <title>60 + 180 + 120</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Orange-Blank-4-nodes-Copy" sketch:type="MSArtboardGroup" transform="translate(-1947.000000, -912.000000)" font-size="36" font-family="Helvetica Neue" font-weight="bold">
+            <g id="60-+-180-+-120" sketch:type="MSLayerGroup" transform="translate(1947.000000, 904.000000)">
+                <text id="60" sketch:type="MSTextLayer" fill="#FFFFFF">
+                    <tspan x="0" y="35">60</tspan>
+                </text>
+                <text id="180" sketch:type="MSTextLayer" fill="#FFFFFF">
+                    <tspan x="146" y="35">180</tspan>
+                </text>
+                <text id="120" sketch:type="MSTextLayer" fill="#FFFF00">
+                    <tspan x="67" y="35">120</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

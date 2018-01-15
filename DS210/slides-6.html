@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=" http-equiv="Content-Type" />
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="Asciidoctor 1.5.3" name="generator" />
+<title>Tuning Cassandra for Performance</title>
+<link href="deck.js/themes/style/font.css" rel="stylesheet" />
+<style>
+.conum { display: inline-block; color: white !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; width: 1.2em; height: 1.2em; font-size: 0.9em; font-weight: bold; line-height: 1.2; font-family: Arial, sans-serif; font-style: normal; position: relative; top: -0.1em; }
+.conum * { color: white !important; }
+.conum + b { display: none; }
+.conum:after { content: attr(data-value); }
+.conum:not([data-value]):empty { display: none; }
+.colist table td:first-of-type { padding-right: 0.25em; }
+</style>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{color:rgba(0,0,0,.4)}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top;line-height:1.45}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+<link href="deck.js/core/deck.core.css" rel="stylesheet" />
+<link href="deck.js/extensions/scale/deck.scale.css" media="screen" rel="stylesheet" />
+<link href="deck.js/extensions/goto/deck.goto.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/style/datastax.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/transition/fade.css" media="screen" rel="stylesheet" />
+<link href="deck.js/core/print.css" media="print" rel="stylesheet" />
+<script src="deck.js/modernizr.custom.js"></script>
+</head>
+<body class="article">
+<div class="deck-container">
+<section class="slide" id="title-slide">
+<h1>Tuning Cassandra for Performance</h1>
+</section>
+<section class="slide transition-green" id="cassandra-operations-configuration-yaml-file">
+<h2>cassandra.yaml configuration file</h2>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>The main configuration file for Cassandra</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+Located in the following directories:<div class="ulist">
+<ul>
+<li>Cassandra package installations: /etc/cassandra</li>
+<li>Cassandra tarball installations: install_location/conf</li>
+</ul>
+</div></p></li>
+<li>Remember, must restart the node for the changes to take effect! This is not an online change.</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="quick-start">
+<h2>Quick Start</h2>
+<div class="paragraph"><p><strong>Minimal properties needed for configuring a cluster</strong></p></div>
+<div class="ulist">
+<ul>
+<li>cluster_name (Default: Test Cluster)</li>
+<li>listen_address (Default: localhost)</li>
+<li>listen_interface (Default: eth0)</li>
+<li>listen_interface_prefer_ipv6 (Default: false)</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="more-advanced-settings">
+<h2>More Advanced Settings</h2>
+<div class="paragraph"><p><strong>There are other pieces of the cassandra.yaml file for more control</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Storage options</li>
+<li>Communications</li>
+<li>Internal node configuration (like threads)</li>
+<li>Security</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Storage Options</strong></p></div>
+<div class="paragraph"><p><strong>hinted_handoff_enabled</strong></p></div>
+<div class="ulist">
+<ul>
+<li>hinted handoff is performed when set to true</li>
+</ul>
+</div>
+<div class="paragraph"><p><strong>max_hint_window_in_ms</strong></p></div>
+<div class="ulist">
+<ul>
+<li>this defines the maximum amount of time a dead host will have hints generated</li>
+</ul>
+</div>
+<div class="paragraph"><p><strong>data_file_directories</strong></p></div>
+<div class="ulist">
+<ul>
+<li>the location of data files</li>
+</ul>
+</div>
+<div class="paragraph"><p><strong>commitlog_directory</strong></p></div>
+<div class="ulist">
+<ul>
+<li>the location of the commit log directory</li>
+</ul>
+</div>
+<div class="paragraph"><p><strong>row_cache_size_in_mb</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Maximum size of the row cache in memory</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Communications</strong></p></div>
+<div class="paragraph"><p><strong>partitioner</strong></p></div>
+<div class="ulist">
+<ul>
+<li>responsible for distributing groups of rows (by partition key) across nodes in the cluster</li>
+</ul>
+</div>
+<div class="paragraph"><p><strong>storage_port</strong></p></div>
+<div class="ulist">
+<ul>
+<li>TCP port, for commands and data</li>
+</ul>
+</div>
+<div class="paragraph"><p><strong>broadcast_address</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Address to broadcast to other Cassandra nodes</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Internal Node Configurations</strong></p></div>
+<div class="paragraph"><p><strong>concurrent_reads/concurrent_writes</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Number of reads/writes permitted to occur concurrently</li>
+</ul>
+</div>
+<div class="paragraph"><p><strong>file_cache_size_in_mb</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Maximum memory to use for pooling sstable buffers</li>
+</ul>
+</div>
+<div class="paragraph"><p><strong>memtable_heap_space_in_mb/memtable_offheap_space_in_mb</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Total on heap and off allowance for memtables</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Security</strong></p></div>
+<div class="paragraph"><p><strong>authorizer</strong></p></div>
+<div class="ulist">
+<ul>
+<li>The authentication backend. It implements IAuthenticator for identifying users</li>
+</ul>
+</div>
+<div class="paragraph"><p><strong>internode_authenticator</strong></p></div>
+<div class="ulist">
+<ul>
+<li>used to allow/disallow connections from peer nodes</li>
+</ul>
+</div>
+</section>
+<section class="slide transition-green" id="cassandra-operations-logs-system-and-output-log">
+<h2>System &amp; Output Logs</h2>
+<div style="page-break-after: always"></div>
+<div class="ulist">
+<ul>
+<li>Simple Logging Facade for Java (SLF4J)</li>
+<li>a logback backend</li>
+<li>Logs are written to the system.log and debug.login (in logs directory)</li>
+<li>Configure logging programmatically or manually.</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="manual-ways-to-configure-logging">
+<h2>Manual ways to configure logging</h2>
+<div class="ulist">
+<ul>
+<li>Run the nodetool setlogginglevel command.</li>
+<li>Configure the logback-test.xml or logback.xml file installed with Cassandra.</li>
+<li>Use the JConsole tool to configure logging through JMX.</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool setlogginglevel</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Used to set logging level for a service</li>
+<li>Can be used instead of modifying the logback.xml file (in the conf directory)</li>
+<li>no the need for a restart</li>
+<li>Example</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ nodetool setlogginglevel org.apache.cassandra.service.StorageProxy DEBUG</code></pre>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool getlogginglevels</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Used to get the current runtime logging levels</li>
+<li>Example</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ nodetool getlogginglevels
+
+Logger Name                                        Log Level
+ROOT                                                    INFO
+com.thinkaurelius.thrift                               ERROR
+org.apache.cassandra                                   DEBUG</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="logback-xml">
+<h2>logback.xml</h2>
+<div class="ulist">
+<ul>
+<li>Contains appenders specifying where to print the log and its configuration.</li>
+<li>This first appender directs logs to a file.</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>&lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender"&gt;
+    &lt;file&gt;${cassandra.logdir}/system.log&lt;/file&gt;
+    &lt;rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy"&gt;
+      &lt;fileNamePattern&gt;${cassandra.logdir}/system.log.%i.zip&lt;/fileNamePattern&gt;
+      &lt;minIndex&gt;1&lt;/minIndex&gt;
+      &lt;maxIndex&gt;20&lt;/maxIndex&gt;
+    &lt;/rollingPolicy&gt;
+
+    &lt;triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy"&gt;
+      &lt;maxFileSize&gt;20MB&lt;/maxFileSize&gt;
+    &lt;/triggeringPolicy&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%-5level [%thread] %date{ISO8601} %F:%L - %msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;</code></pre>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="ulist">
+<ul>
+<li>The second appender directs logs to the console.</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>&lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+  &lt;encoder&gt;
+    &lt;pattern&gt;%-5level %date{HH:mm:ss,SSS} %msg%n&lt;/pattern&gt;
+  &lt;/encoder&gt;
+&lt;/appender&gt;</code></pre>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>You can change the following logging functionality:</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Rolling policy</li>
+<li><p>
+The policy for rolling logs over to an archive<div class="ulist">
+<ul>
+<li>Location and name of the log file</li>
+<li>Location and name of the archive</li>
+<li>Minimum and maximum file size to trigger rolling</li>
+</ul>
+</div></p></li>
+<li>Format of the message</li>
+<li>The log level</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Possible log levels:</strong></p></div>
+<div class="ulist">
+<ul>
+<li>ALL</li>
+<li>TRACE</li>
+<li>DEBUG</li>
+<li>INFO (Default)</li>
+<li>WARN</li>
+<li>ERROR</li>
+<li>OFF</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="gc-logging">
+<h2>GC logging</h2>
+<div class="paragraph"><p><strong>Why is it important?</strong></p></div>
+<div class="ulist">
+<ul>
+<li>The GC log is a very important tool for revealing potential improvements to the GC configuration and heap</li>
+<li>It provides exact data about its results and duration foreach GC happening</li>
+<li>Useful flags:</li>
+</ul>
+</div>
+<div class="paragraph"><p><strong>-XX:+PrintGC</strong> --Simple, prints a line for every young generation GC and every full GC</p></div>
+<div class="paragraph"><p><strong>-XX:+PrintGCDetails</strong> --Detailed, young generation as well as old and perm gen</p></div>
+<div class="paragraph"><p><strong>-XX:+PrintGCTimeStamps and -XX:+PrintGCDateStamps</strong> --Adds time and date information to a simple or detailed GC log</p></div>
+</section>
+<section class="slide transition-purple" id="exercise-system-and-output-logs">
+<h2>Exercise --System and Output Logs</h2>
+
+</section>
+<section class="slide transition-purple" id="courses-DS210-exercise-placeholders-exercise-6">
+<h2>Exercise 6&#8212;&#8203;System and Output Logs</h2>
+
+</section>
+<section class="slide transition-green" id="cassandra-operations-nodetool-nodetool">
+<h2>nodetool</h2>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>This is how you will be managing your individual nodes.</strong></p></div>
+<div class="ulist">
+<ul>
+<li>A command-line interface for monitoring Cassandra.</li>
+<li>Also used for performing routine database operations.</li>
+<li>Included in the Cassandra distribution.</li>
+<li>Run directly from an operational Cassandra node.</li>
+</ul>
+</div>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="nodetool\wrench" src="images/cassandra/operations/nodetool/nodetool/wrench.png" /></span></p></div>
+</section>
+<section class="slide" id="how-does-it-work">
+<h2>How does it work?</h2>
+<div class="ulist">
+<ul>
+<li>JMX command line wrapper</li>
+<li>communicates with JMX to perform operational and monitoring tasks exposed by MBeans.</li>
+<li>JMX is a Java technology that supplies tools for managing and monitoring Java applications and services.</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>The nodetool commands can be broken up into these groups:</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Cluster</li>
+<li>Server</li>
+<li>Backup</li>
+<li>Storage</li>
+<li>Compaction</li>
+<li>Network</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="types-of-commands-cluster">
+<h2>Types of commands: Cluster</h2>
+<div class="ulist">
+<ul>
+<li>This has to do with working with the cluster-wide information</li>
+<li>as the point-of-view of that node as it sees the state of the cluster</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool status</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Provides information about the cluster, such as the state, load, and IDs</li>
+<li>Who&#8217;s up and who&#8217;s down</li>
+<li>This is probably the most used nodetool command</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>nodetool &lt;options&gt; status &lt;keyspace&gt;</code></pre>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool status</strong></p></div>
+<div class="paragraph"><p><span class="image"><img alt="nodetool\status" src="images/cassandra/operations/nodetool/nodetool/status.png" /></span></p></div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool repair</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Starts a repair process from the point of view of that node</li>
+<li>Repairs one or more tables</li>
+<li>Covered in depth in a different module</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>nodetool &lt;options&gt; repair</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="types-of-commands-server">
+<h2>Types of commands: Server</h2>
+<div class="paragraph"><p><strong>nodetool info</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Provides node information, such as load and uptime</li>
+<li>the status of the JVM</li>
+<li>Use the "T" flag to display all tokens</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>nodetool &lt;options&gt; info ( -T | --tokens )</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>Use nodetool info to print out node information, including load and uptime.</li>
+<li>Use the "T" flag to display all tokens</li>
+</ul>
+</div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool info</strong></p></div>
+<div class="paragraph"><p><span class="image"><img alt="nodetool\nodetool info" src="images/cassandra/operations/nodetool/nodetool/nodetool_info.png" /></span></p></div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool tpstats</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Provides usage statistics of thread pools</li>
+<li>How many completed, how many pending, which ones are blocked</li>
+<li>A high number of pending tasks for any pool can indicate performance problems</li>
+<li>Shows mutation drops (critical for troubleshooting a node)</li>
+<li>A heavily used command during trouble shooting</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>nodetool &lt;options&gt; tpstats</code></pre>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><span class="image"><img alt="nodetool\tpstats" src="images/cassandra/operations/nodetool/nodetool/tpstats.png" /></span></p></div>
+<div class="openblock notes">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>Run the nodetool tpstats command on the local node.</li>
+<li>The nodetool tpstats command provides statistics about the number of active, pending, and completed tasks for each stage of Cassandra operations by thread pool.</li>
+<li>A high number of pending tasks for any pool can indicate performance problems</li>
+</ul>
+</div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><span class="image"><img alt="nodetool\tpstats2" src="images/cassandra/operations/nodetool/nodetool/tpstats2.png" /></span></p></div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool tablehistograms</strong></p></div>
+<div class="ulist">
+<ul>
+<li>The nodetool tablehistograms command provides statistics about a table.</li>
+<li>Includes read/write latency, partition size, column count, and number of SSTables.</li>
+<li>The report is incremental, not cumulative.</li>
+<li>It covers all operations since the last time nodetool tablehistograms was run in the current session.</li>
+<li>The use of the metrics-core library makes the output more informative and easier to understand.</li>
+<li>These statistics could be used to plot a frequency function.</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>nodetool &lt;options&gt; tablehistograms -- &lt;keyspace&gt;.&lt;table&gt;</code></pre>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool tablehistograms</strong></p></div>
+<div class="ulist">
+<ul>
+<li>The output shows the percentile rank of read and write latency values, the partition size, and the cell count for the table.</li>
+</ul>
+</div>
+<div class="paragraph"><p><span class="image"><img alt="nodetool\tablehistograms" src="images/cassandra/operations/nodetool/nodetool/tablehistograms.png" /></span></p></div>
+</section>
+<section class="slide" id="types-of-commands-backup">
+<h2>Types of commands: Backup</h2>
+<div class="paragraph"><p><strong>nodetool snapshot</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Take a snapshot of one or more keyspaces, or of a table, to backup data.</li>
+<li>Cassandra flushes the node before taking a snapshot, takes the snapshot, and stores the data in the snapshots directoryof each keyspace in the data directory.</li>
+<li>If you do not specify the name of a snapshot directory using the -t option, Cassandra names the directory using the timestamp of the snapshot, for example 1391460334889.</li>
+<li>Covered in a different module.</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>$ nodetool &lt;options&gt; snapshot</code></pre>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool snapshot</strong></p></div>
+<div class="paragraph"><p><strong>Example: All keyspaces</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>$ nodetool snapshot</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>The following message appears:</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>Requested creating snapshot(s) for [all keyspaces] with snapshot name [1391464041163]
+Snapshot directory: 1391464041163</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>Because you did not specify a snapshot name, Cassandra names snapshot directories using the timestamp of the snapshot.</li>
+<li>If the keyspace contains no data, empty directories are not created.</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool snapshot</strong></p></div>
+<div class="paragraph"><p><strong>Example: Single keyspace snapshot</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Assuming you created the keyspace cycling, took a snapshot of the keyspace and named the snapshot 2015.07.17.:</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>$ nodetool snapshot -t 2016.05.17 killrvideo</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>The following output appears:</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>Requested creating snapshot(s) for [killrvideo] with snapshot name [2016.05.17]
+Snapshot directory: 2016.05.17</code></pre>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="ulist">
+<ul>
+<li>Assuming the killrvideo keyspace contains two tables, users and tags, taking a snapshot of the keyspace creates multiple snapshot directories named 2016.05.17.</li>
+<li>A number of .db files containing the data are located in these directories.</li>
+<li>For example, from the installation directory:</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>$ cd data/data/killrvideo/users-a882dca02aaf11e58c7b8b496c707234/snapshots/2016.05.17
+$ ls</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>We would see the following:</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>la-1-big-CompressionInfo.db  la-1-big-Index.db       la-1-big-TOC.txt
+la-1-big-Data.db             la-1-big-Statistics.db  la-1-big-Digest.adler32
+la-1-big-Filter.db           la-1-big-Summary.db  manifest.json</code></pre>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>$ cd data/data/killrvideo/tags-a882dca02aaf11e58c7b8b496c707234/snapshots/2015.07.17
+$ ls</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>We would see the following:</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>la-1-big-CompressionInfo.db  la-1-big-Index.db       la-1-big-TOC.txt
+la-1-big-Data.db             la-1-big-Statistics.db  la-1-big-Digest.adler32
+la-1-big-Filter.db           la-1-big-Summary.db  manifest.json</code></pre>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool snapshot</strong></p></div>
+<div class="paragraph"><p><strong>Example: Multiple keyspaces snapshot</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Assuming you created a keyspace named mykeyspace in addition to the killrvideo keyspace, take a snapshot of both keyspaces.</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>$ nodetool snapshot mykeyspace killrvideo</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>The following message appears:</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>Requested creating snapshot(s) for [mykeyspace, killrvideo] with snapshot name [1391460334889]
+Snapshot directory: 1391460334889</code></pre>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool snapshot</strong></p></div>
+<div class="paragraph"><p><strong>Example: Single table snapshot</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Take a snapshot of only the users table in the killrvideo keyspace.</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>$ nodetool snapshot --table users killrvideo</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>The following message appears:</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>Requested creating snapshot(s) for [cycling] with snapshot name [1391461910600]
+Snapshot directory: 1391461910600</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>Cassandra creates the snapshot directory named 1391461910600 that contains the backup data of cyclist_name table in data/data/cycling/cyclist_name-a882dca02aaf11e58c7b8b496c707234/snapshots, for example.</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool snapshot</strong></p></div>
+<div class="paragraph"><p><strong>Example: List of different keyspace.tables snapshot</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Take a snapshot of several tables in different keyspaces, such as users table in the killrvideo keyspace and the sample_times table in the test keyspace.
+The keyspace.table list should be comma-delimited with no spaces.</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>$ nodetool snapshot -kt cycling.cyclist_name,test.sample_times</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>The following message appears:</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>Requested creating snapshot(s) for [killrvideo.users,test.sample_times] with snapshot name [1431045288401]
+Snapshot directory: 1431045288401</code></pre>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool clearsnapshot</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Removes one or more snapshots.</li>
+<li>Covered in a different module.</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>$ nodetool &lt;options&gt; clearsnapshot -t &lt;snapshot&gt; -- ( &lt;keyspace&gt; ... )</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="types-of-commands-storage">
+<h2>Types of commands: Storage</h2>
+<div class="paragraph"><p><strong>nodetool cleanup</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Covered in a different module</li>
+<li>Used to get rid of old data on nodes after bootstrap operations</li>
+<li>Deletes snapshots in one or more keyspaces. To remove all snapshots, omit the snapshot name</li>
+<li>Not specifying a snapshot name removes all snapshots</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>$ nodetool &lt;options&gt; clearsnapshot -t &lt;snapshot&gt; -- ( &lt;keyspace&gt; ... )</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>To clear snapshots on all nodes at once, use a parallel ssh utility</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool flush</strong></p></div>
+<div class="ulist">
+<ul>
+<li>This command flushes everything in the memtables out to SSTables and deletes all commit log segments</li>
+<li>You can specify a keyspace followed by one or more tables that you want to flush from the memtable to SSTables on disk</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="types-of-commands-compaction">
+<h2>Types of commands: Compaction</h2>
+<div class="paragraph"><p><strong>nodetool compact</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Forces a major compaction on one or more tables for <span class="underline">size-tiered compaction</span></li>
+<li><strong class="big red yellow-background">WARNING</strong> Don&#8217;t do that!!</li>
+<li>Acts differently for different compaction strategies</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>nodetool &lt;options&gt; compact &lt;keyspace&gt; ( &lt;table&gt; ... )</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>nodetool compact forces a major compaction on one or more tables</li>
+<li>keyspace is the name of the keyspace and table is one or more table names, separated by a space</li>
+</ul>
+</div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Major compactions may behave differently depending which compaction strategy is used for the affected tables:</strong></p></div>
+<div class="ulist">
+<ul>
+<li><strong class="big red yellow-background">WARNING</strong> This will knock out your disk if you&#8217;re not careful</li>
+<li><p>
+Size-tiered compaction (STCS) splits repaired and unrepaired data into separate pools for separate compactions<div class="ulist">
+<ul>
+<li>A major compaction generates two SSTables, one for each pool of data</li>
+</ul>
+</div></p></li>
+<li><p>
+Leveled compaction (LCS) performs size-tiered compaction on unrepaired data<div class="ulist">
+<ul>
+<li>After repair completes, Cassandra moves data from the set of unrepaired SSTables to L0</li>
+</ul>
+</div></p></li>
+<li><p>
+Date-tiered (DTCS) splits repaired and unrepaired data into separate pools for separate compactions<div class="ulist">
+<ul>
+<li>A major compaction generates two SSTables, one for each pool of data</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool compactionstats</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Provide statistics about a compaction</li>
+<li>Not something you would just run all the time</li>
+<li>This is a JMX statistic you could also pull in using OpsCenter</li>
+<li>See what is currently compacting; what files</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>nodetool &lt;options&gt; compactionstats -H</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>H converts bytes to a human readable form: KB, MB, GB, or TB</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>nodetool compactionstats provides statistics about compaction</li>
+<li>H converts bytes to a human readable form: kilobytes (KB), megabytes (MB), gigabytes (GB), or terabytes (TB).</li>
+</ul>
+</div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><span class="image"><img alt="nodetool\compaction stats2" src="images/cassandra/operations/nodetool/nodetool/compaction_stats2.png" /></span></p></div>
+<div class="openblock notes">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>Here&#8217;s the kind of output you should get from running nodetool compactionstats</li>
+<li>The system log lists the names of the SSTables compacted.</li>
+<li>The total column shows the total number of uncompressed bytes of SSTables being compacted.</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section class="slide" id="types-of-commands-network">
+<h2>Types of commands: Network</h2>
+<div class="paragraph"><p><strong>nodetool proxyhistograms</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Provides a histogram of network statistics.</li>
+<li>The output of this command shows the full request latency recorded by the coordinator.</li>
+<li>includes the percentile rank of read and write latency values for inter-node communication.</li>
+<li>Typically, you use the command to see if requests encounter a slow node.</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool proxyhistograms</strong></p></div>
+<div class="paragraph"><p><span class="image"><img alt="nodetool\proxyhistograms" src="images/cassandra/operations/nodetool/nodetool/proxyhistograms.png" /></span></p></div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>nodetool netstats</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Provides network information about the host.</li>
+<li>The default host is the connected host if the user does not include a host name or IP address in the command.</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>The output includes the following information:</strong></p></div>
+<div class="ulist">
+<ul>
+<li>JVM settings</li>
+<li>Mode: The operational mode of the node: JOINING, LEAVING, NORMAL, DECOMMISSIONED, CLIENT</li>
+<li>Read repair statistics</li>
+<li>Attempted: The number of successfully completed read repair operations</li>
+<li>Mismatch (blocking): The number of read repair operations since server restart that blocked a query</li>
+<li>Mismatch (background):  The number of read repair operations since server restart performed in the background</li>
+<li>Pool name: Information about client read and write requests by thread pool.</li>
+<li>Active, pending, and completed number of commands and responses</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p>Get the network information for a node 10.171.147.128:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>$ nodetool -h 10.171.147.128 netstats</code></pre>
+</div>
+</div>
+<div class="paragraph"><p>The output is:</p></div>
+<div class="paragraph"><p><span class="image"><img alt="nodetool\netstats" src="images/cassandra/operations/nodetool/nodetool/netstats.png" /></span></p></div>
+</section>
+<section class="slide transition-purple" id="exercise-nodetool">
+<h2>Exercise --nodetool</h2>
+
+</section>
+<section class="slide transition-purple" id="courses-DS210-exercise-placeholders-exercise-7">
+<h2>Exercise 7&#8212;&#8203;Nodetool</h2>
+
+</section>
+<section class="slide transition-green" id="cassandra-operations-monitoring-opscenter">
+<h2>OpsCenter</h2>
+
+</section>
+<section class="slide" id="dse-management-services">
+<h2>DSE Management Services</h2>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="opscenter\opscenter2" height="323" src="images/cassandra/operations/monitoring/opscenter/opscenter2.png" width="641" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>Performance Service</li>
+<li>Backup &amp; Restore Service</li>
+<li>Repair Service</li>
+<li>Best Practices Service</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Lets talk about 4 specific management services that exists within Opsc..
+Available in DSE
+Perf- Troubleshoot faster even for novice new DBAs
+Backup and Restore- Enterprise requirement.
+Repairs- ensures cluster performs smoothly.
+BPS- Rules based on our Subject matter expertise……helps you know what you MUST fix.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="key-capabilities">
+<h2>Key Capabilities</h2>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="opscenter\opscenter3" height="444" src="images/cassandra/operations/monitoring/opscenter/opscenter3.png" width="559" /></span></p></div>
+<div class="paragraph"><p><strong>Visual Monitoring and Management</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Control automatic management services including transparent repair</li>
+<li>Manage and schedule backup and restore operations</li>
+<li>Perform capacity planning with historical trend analysis and forecasting capabilities</li>
+<li>Proactively manage all clusters with threshold and timing-based alerts</li>
+<li>Visually create new clusters with a few mouse clicks either on premise or in the cloud</li>
+<li>Built-in Automatic Failover</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="architecture">
+<h2>Architecture</h2>
+<div class="paragraph"><p><span class="image"><img alt="opscenter\opscenter arch" src="images/cassandra/operations/monitoring/opscenter/opscenter_arch.png" /></span></p></div>
+<div class="openblock notes">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>web appication deployed on premise; load from anywhere</li>
+<li>agent runs on each node &amp; agents connect to central opscenter process</li>
+<li>agent communicates with local node</li>
+<li>backup instance of opscenterd</li>
+<li>built-in or LDAP authentication supported</li>
+<li>encryption supported on all communication channels</li>
+<li>manage multiple clusters</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section class="slide" id="performance-service-overview">
+<h2>Performance Service - Overview</h2>
+<div class="ulist">
+<ul>
+<li>Collects key performance metrics to quickly troubleshoot a database cluster&#8217;s performance</li>
+<li>Analyzes Query, Table &amp; Cluster specific metrics</li>
+<li>Correlates different metrics and provides  custom recommendations to address specific issues</li>
+<li>Eliminates the need for custom scripting and scheduling to detect problem nodes</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Historical metrics, DSE perf objects, Recommendation and Alerts.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="performance-service-slow-queries">
+<h2>Performance Service - Slow Queries</h2>
+<div class="ulist">
+<ul>
+<li>Identify Slow Queries</li>
+<li>Custom recommendations</li>
+<li>Display contextual alerts</li>
+<li>Visual Query tracing</li>
+</ul>
+</div>
+<div class="paragraph"><p><span class="image"><img alt="opscenter\slow queries" height="381" src="images/cassandra/operations/monitoring/opscenter/slow_queries.png" width="921" /></span></p></div>
+</section>
+<section class="slide" id="performance-service-table-stats">
+<h2>Performance Service - Table Stats</h2>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="opscenter\tables stats" height="400" src="images/cassandra/operations/monitoring/opscenter/tables_stats.png" width="600" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>Diagnose Table performance</li>
+<li>Custom recommendations</li>
+<li>Cluster level &amp; node drill down</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="performance-service-threadpool-stats">
+<h2>Performance Service - ThreadPool Stats</h2>
+<div class="ulist">
+<ul>
+<li>Investigate Thread Pools metrics</li>
+<li>Historical Tracking</li>
+<li>Eliminates custom scripts</li>
+</ul>
+</div>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="opscenter\threadpool stats" height="400" src="images/cassandra/operations/monitoring/opscenter/threadpool_stats.png" width="800" /></span></p></div>
+</section>
+<section class="slide" id="backup-service-visual-backup-management">
+<h2>Backup Service - Visual Backup Management</h2>
+<div class="ulist">
+<ul>
+<li>Automatic replication doesn&#8217;t preclude backups</li>
+<li>Backup &amp; Restore on distributed systems is hard</li>
+<li>Enterprise-class visual backup service guards against data loss on managed database clusters.</li>
+<li>Removes need for building custom scripts and tools.</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>First thought that comes to your mind- Why should I take backups/ Doesn&#8217;t Replication take of it? Replication does not mean that you should not take backups.</li>
+<li>Take backups data corruption , data loss ( replication of disaster recovery)
+( Sstables are immutable- snapshots takes hard links to sstables)</li>
+<li>OpsCenter Backup services supports a wide range of functionality from adhoc snapshot backups, scheduled backups, Commitlog backups for PIT etc.,</li>
+<li>Mike will explain you all the capabilities that we provide later, but you have to understand that if you don&#8217;t script correctly, you are going to be in a spot of bother.</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section class="slide" id="backup-service-scheduled-backups">
+<h2>Backup Service - Scheduled Backups</h2>
+<div class="ulist">
+<ul>
+<li>User-configurable</li>
+<li>Sync across cluster</li>
+<li>Automatic cleanup</li>
+<li>Activity Reporting</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="ulist">
+<ul>
+<li><p>
+User configurable recurring schedules<div class="ulist">
+<ul>
+<li>Multiple schedules</li>
+</ul>
+</div></p></li>
+<li><p>
+On Server backups use c* snapshot, which uses hardlinks<div class="ulist">
+<ul>
+<li>Fast, doesn’t use disk space initially</li>
+</ul>
+</div></p></li>
+<li>Automatic cleanup via retention policy</li>
+<li><p>
+Detailed activity reporting<div class="ulist">
+<ul>
+<li>Alerts on ERROR</li>
+<li>Details all the way down to sstable level</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section class="slide" id="backup-service-remote-backups">
+<h2>Backup Service - Remote Backups</h2>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="opscenter\cloud cluster" height="528" src="images/cassandra/operations/monitoring/opscenter/cloud_cluster.png" width="344" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>Store backups in AWS S3</li>
+<li>Optimized storage</li>
+<li>Automatic Cleanup</li>
+<li>Future Support</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>Automatically send backups to S3</li>
+<li>Upload directly from nodes</li>
+<li><p>
+Never upload the same sstable twice<div class="ulist">
+<ul>
+<li>Immutable files</li>
+</ul>
+</div></p></li>
+<li><p>
+Intelligent automatic cleanup<div class="ulist">
+<ul>
+<li>Handles optimized storage</li>
+</ul>
+</div></p></li>
+<li><p>
+Future<div class="ulist">
+<ul>
+<li>NFS, Generic S3 API, Other cloud providers</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section class="slide" id="backup-service-restore">
+<h2>Backup Service - Restore</h2>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="opscenter\cloud cluster3" height="439" src="images/cassandra/operations/monitoring/opscenter/cloud_cluster3.png" width="567" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>Coordinated Restore</li>
+<li>Different Topologies</li>
+<li>Cloning</li>
+<li>PIT Restore</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="ulist">
+<ul>
+<li><p>
+restore<div class="ulist">
+<ul>
+<li>fix data with truncate</li>
+<li>restore missing data-</li>
+<li>handle c* internal sstable formats</li>
+</ul>
+</div></p></li>
+<li><p>
+different topologies<div class="ulist">
+<ul>
+<li>move/remove/add node</li>
+</ul>
+</div></p></li>
+<li>clone</li>
+<li>PIT Restore - commitlog archiving &amp; second granularity</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section class="slide" id="visual-repair-service">
+<h2>Visual Repair Service</h2>
+<div class="ulist">
+<ul>
+<li>Automatically maintains data consistency across a cluster without impacting performance</li>
+<li>Ensures that your cluster operates efficiently by optimally running repairs</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The term “Repair” is overloaded.  Think of Repairs as synchronizing replicas.
+Synchronization is a hard problem to solve.  Repair is how C* solves this.</p></div>
+<div class="paragraph"><p>There are couple of ways automatically/dynamically perform repairs e.g read repairs.
+   * where one needs to manually perform repairs.</p></div>
+<div class="paragraph"><p>OpsCenter Repair mechanism simplifies this for you.</p></div>
+<div class="paragraph"><p>node’s data can become inconsistent.
+ node goes down need to bring it up. &gt; max_hint_window.  use repair to resynchronize it
+repairs need to be run before gc_grace_seconds to ensure that deleted data is not resurrected.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="repair-service-under-the-hood">
+<h2>Repair Service - Under the Hood</h2>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="opscenter\repair cluster" height="483" src="images/cassandra/operations/monitoring/opscenter/repair_cluster.png" width="482" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>Repair within X days</li>
+<li>Continuous Repairs</li>
+<li>One repair per replica set</li>
+<li>Parallel repairs</li>
+<li>vnodes</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>repair time window - related to gc_grace</li>
+<li>Repairing an entire node is expensive.</li>
+<li>describe algorithm</li>
+<li>repair service continuously runs</li>
+<li><p>
+two goals:<div class="ulist">
+<ul>
+<li>repair data, don’t affect performance</li>
+<li>only 1 repair per replica set</li>
+</ul>
+</div></p></li>
+<li>vnodes</li>
+<li>Incremental Repairs- mention.</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section class="slide" id="best-practice-service">
+<h2>Best Practice Service</h2>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="opscenter\best practices" height="400" src="images/cassandra/operations/monitoring/opscenter/best_practices.png" width="500" /></span></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+Benefits<div class="ulist">
+<ul>
+<li>Periodically scans database clusters and automatically detects issues that threaten a cluster’s security, availability, and performance</li>
+<li>Utilizes a set of expert rules that span a variety of different categories and summarizes the results</li>
+</ul>
+</div></p></li>
+<li><p>
+Under the Hood<div class="ulist">
+<ul>
+<li>OpsCenter Server orchestrates the Best Practice service to ensure relevant best practice alerts are displayed</li>
+<li>OpsCenter Server either directly interacts with Cassandra or through OpsCenter Agents to get results</li>
+<li>OpsCenter Server polls, aggregates and sends the results to OpsCenter UI for visualization/end user consumption</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="conclusion-opscenter-management-services">
+<h2>Conclusion - OpsCenter Management Services</h2>
+<div class="ulist">
+<ul>
+<li>Obviate error-prone, manual-based maintenance processes and help automate the protection of critical data</li>
+<li>Eliminate the need for custom tooling and development</li>
+<li>Help novice DBAs and operations personnel manage DSE Cassandra like seasoned professionals</li>
+</ul>
+</div>
+</section>
+<section class="slide transition-purple" id="exercise-opscenter">
+<h2>Exercise --Opscenter</h2>
+
+</section>
+<section class="slide transition-purple" id="courses-DS210-exercise-placeholders-exercise-8">
+<h2>Exercise 8&#8212;&#8203;OpsCenter</h2>
+
+</section>
+<section class="slide transition-green" id="cassandra-operations-monitoring-jmx">
+<h2>JMX</h2>
+<div style="page-break-after: always"></div>
+<div class="ulist">
+<ul>
+<li>Java Management Extensions</li>
+<li>very complicated</li>
+<li>Resources represented as objects with attributes and operations</li>
+<li>Cassandra (as well as other applications) uses it extensively for monitoring and user input.</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="ulist">
+<ul>
+<li>The gateway to metrics (but requires Java to access).</li>
+<li>Can use other things to access but still need Java wrapper.</li>
+<li>Been known for having memory leaks</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><span class="image"><img alt="jmx\jmxarch" height="536" src="images/cassandra/operations/monitoring/jmx/jmxarch.png" width="981" /></span></p></div>
+<div class="paragraph"><p><span class="small"><a class="bare" href="https://technology.amis.nl/2007/05/11/jmx-java-management-extension-paving-the-way-for-manageable-applications-javaone-2007/">https://technology.amis.nl/2007/05/11/jmx-java-management-extension-paving-the-way-for-manageable-applications-javaone-2007/</a></span></p></div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>There are a lot of ways to access JMX</strong></p></div>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="jmx\jconsole" height="449" src="images/cassandra/operations/monitoring/jmx/jconsole.png" width="539" /></span></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+Visual<div class="ulist">
+<ul>
+<li>jconsole</li>
+<li>visualvm</li>
+</ul>
+</div></p></li>
+<li><p>
+Command Line<div class="ulist">
+<ul>
+<li>jmxterm</li>
+<li>jxmsh</li>
+</ul>
+</div></p></li>
+<li>MX4J</li>
+<li>Jolokia</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>JMX has MBeans</strong></p></div>
+<div class="ulist">
+<ul>
+<li>[domain]:[key]=[value],[key2]=[value2]&#8230;&#8203;</li>
+<li>Have a domain and a series of key value attributes.</li>
+<li>Attributes narrow down what the bean is for</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>org.apache.cassandra.metrics</strong></p></div>
+<div class="ulist">
+<ul>
+<li>"metrics" domain contains all of the metrics you need.</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>org.apache.cassandra.metrics :type=</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Cache</li>
+<li>Client</li>
+<li>ClientRequest</li>
+<li>ClientRequestMetrics</li>
+<li>ColumnFamily</li>
+<li>CommitLog</li>
+<li>Compaction</li>
+<li>DroppedMessage</li>
+<li>FileCache</li>
+<li>Keyspace</li>
+<li>Storage</li>
+<li>ThreadPools</li>
+</ul>
+</div>
+</section>
+<section class="slide transition-green" id="cassandra-operations-compaction-leveled">
+<h2>Leveled Compaction</h2>
+
+</section>
+<section class="slide" id="leveled-compaction">
+<h2>Leveled Compaction</h2>
+<div class="paragraph" id="lvldco"><p><strong>The Algorithm</strong></p></div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Leveled compaction assigns each SSTable a level. A partition will only exist in one SSTable per level.</p></div>
+<div class="paragraph"><p>Animation 1: Here&#8217;s our first SSTable flushed to disk. It has five partitions, each identified by their token key.</p></div>
+<div class="paragraph"><p>Animation 2: Since this is a newly flushed SSTable, size tiered compaction considers this SSTable to be in level zero. Generally any table residing in level zero immediately compacts to lower levels. Since there are no other SSTables to compact with, this table remains in L0 for the time being.</p></div>
+<div class="paragraph"><p>Animation 3: Here&#8217;s a second flushed SSTable. Leveled compaction will now compact the two L0 SSTables together.</p></div>
+<div class="paragraph"><p>Animation 4: Leveled compaction always compacts down to the level immediately below the current one. In this case, that&#8217;s level 1 (L1).</p></div>
+<div class="paragraph"><p>Animation 5: As with all compaction, we combine partitions together from the two source SSTables into a new SSTable. In these illustrations, we are assuming no updates/deletes, hence our new partitions sizes will be the sum of the two source partitions.</p></div>
+<div class="paragraph"><p>Animation 6: Here we combine the two 12 token key partitions into a single partition in a new SSTable.</p></div>
+<div class="paragraph"><p>Animation 7: Leveled compaction maintains a max SSTable size. This is tunable. The default value is 160MB.</p></div>
+<div class="paragraph"><p>Animation 8: We continue adding source partitions to the new SSTable until the new SSTable meets or exceeds the max SSTable size.</p></div>
+<div class="paragraph"><p>Animation 9: We maxed our size, so we create a new SSTable.</p></div>
+<div class="paragraph"><p>Animation 10: Partition 52 is rather large and takes up the whole of our new SSTable.</p></div>
+<div class="paragraph"><p>Animation 11: So we make a new SSTable.</p></div>
+<div class="paragraph"><p>Animation 12: Combine 74</p></div>
+<div class="paragraph"><p>Animation 13: And also 88</p></div>
+<div class="paragraph"><p>Animation 14: We delete the old L0 SSTables.</p></div>
+<div class="paragraph"><p>Animation 15: Each level has a max size. In practice, this is 10x the size of the previous level, L0 considered 160MB. (However, the size of L0 depends on the size of the SSTables flushed to it, which is determined by factors that cause the MemTable to flush to disk.)</p></div>
+<div class="paragraph"><p>Animation 16: In our example and to save screen real-estate, we will use a multiplier of two instead of ten, but the algorithm still works the same.</p></div>
+<div class="paragraph"><p>Animation 17: You can see that L1 is too large, so leveled compaction further compacts SSTables from L1 to L2.</p></div>
+<div class="paragraph"><p>Animation 18: Since there are no existing tables in L2, compacting L1 to L2 is simply a matter of moving an existing L1 SSTable to L2. Leveled compaction tries to consider the SSTables in turn when selecting which SSTable to compact to a lower level.</p></div>
+<div class="paragraph"><p>Animation 19: L1 is still too large.</p></div>
+<div class="paragraph"><p>Animation 20: So we compact another SSTable down to L2.</p></div>
+<div class="paragraph"><p>Animation 21: (Cleaning up the visuals.)</p></div>
+<div class="paragraph"><p>Animation 22: L2 has a max size.</p></div>
+<div class="paragraph"><p>Animation 23: L2&#8217;s max size is twice the size of L1. (Remember, the real multiplier is ten, not two however.)</p></div>
+<div class="paragraph"><p>Animation 24: So now our levels are in a consistent state. Leveled compaction is complete.</p></div>
+<div class="paragraph"><p>Animation 25: A new SSTable flushes to disk into L0. Leveled compaction will immediately compact this new SSTable with the SSTables in L1.</p></div>
+<div class="paragraph"><p>Critical: The way leveled compaction chooses which SSTables to compact together is simply a matter of overlapping token keys. For example, this new SSTable covers token ranges 8 to 88 inclusive. The single SSTable in L1 covers the token range 74 to 88 inclusive. Since these two ranges overlap, leveled compaction will combine these two SSTables together.</p></div>
+<div class="paragraph"><p>Animation 26: So let&#8217;s compact these two SSTables together.</p></div>
+<div class="paragraph"><p>Animation 27: Partitions 8, 28, and 52 don&#8217;t have any pairs in the SSTable on the right, so they compact as is.</p></div>
+<div class="paragraph"><p>Animation 28: We hit the max SSTable size, so time to write a new one.</p></div>
+<div class="paragraph"><p>Animation 29: 74 is the lowest key between the two SSTables, so leveled compaction writes it next.</p></div>
+<div class="paragraph"><p>Animation 30: Finally the two 88 partitions from both SSTables combine to make a new partition.</p></div>
+<div class="paragraph"><p>Animation 31: Oh no, L1 is too big again. We must continue compacting down.</p></div>
+<div class="paragraph"><p>Important: Can you determine which SSTables will compact next?</p></div>
+<div class="paragraph"><p>Answer: Since both SSTables are new to the compaction party in L1, leveled compaction picks the first to compact down. Leveled compaction then determines which SSTables in L2 overlap with this SSTable. This SSTable has a token range of 8 to 52 inclusive. This range overlaps the first two SSTables in L2, each having a token range of 12 to 28 inclusive and 52 to 52 inclusive respectively.</p></div>
+<div class="paragraph"><p>Animation 32: Let&#8217;s compact!</p></div>
+<div class="paragraph"><p>Animation 33: We first compact 8 since it&#8217;s the lowest token between all three tables.</p></div>
+<div class="paragraph"><p>Animation 34: Then 12</p></div>
+<div class="paragraph"><p>Animation 35: Then 28. Notice there are two SSTables containing a partition of token 28. If all three SSTables contained 28, we would combine all three instead.</p></div>
+<div class="paragraph"><p>Animation 36: That new SSTable is full.</p></div>
+<div class="paragraph"><p>Animation 37: We combine the two 52 partitions into one huge partition. Again, they take up the entire SSTable.</p></div>
+<div class="paragraph"><p>Animation 38: We are now in a consistent state where all levels are not too large.</p></div>
+<div class="paragraph"><p>Animation 39: And the process continues as Cassandra flushes SSTables to L0.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="actual-implementation">
+<h2>Actual Implementation</h2>
+<div class="ulist">
+<ul>
+<li>We used a multiplier of two for our example</li>
+<li>Leveled compaction uses a multiplier of 10 per level</li>
+<li>SSTable max size is 160MB (<code>sstable_size_in_mb</code>)</li>
+<li>SSTables exceed this amount to ensure the last partition written is complete</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="ulist">
+<ul>
+<li>Our example data model had extremely large partitions</li>
+<li>The more granular your partitions, the closer to 160MB the SSTables will be</li>
+<li>Hence, more uniform</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="reads">
+<h2>Reads</h2>
+<div class="ulist">
+<ul>
+<li><p>
+Leveled compaction is best for read heavy workload<div class="ulist">
+<ul>
+<li>Occasional writes but high reads</li>
+</ul>
+</div></p></li>
+<li>Each partition resides in only one SSTable per level (max)</li>
+<li><p>
+Generally reads handled by just a few SSTables<div class="ulist">
+<ul>
+<li>Partitions group together in a handful of levels as they compact down</li>
+<li>90% of the data resides in the lowest level (due to 10x rule)</li>
+<li>Unless the lowest level is not yet full</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p>Example:</p></div>
+<div class="ulist">
+<ul>
+<li>L1: 1,600MB (1.6GB)</li>
+<li>L2: 16,000MB (16GB)</li>
+<li>L3: 160,000MB (160GB)</li>
+<li>L4: 1,600,000MB (1.6TB)</li>
+</ul>
+</div>
+<div class="ulist">
+<ul>
+<li>L1 + L2 + L3 = 177,600GB</li>
+<li>177,600GB / 1.6TB ~= 10%</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>We ignore L0 here because L0&#8217;s size depends on factors that determine when a MemTable flushes to disk. When compaction is complete, L0 will always be empty because leveled compaction immediately compacts L0 down.</p></div>
+<div class="paragraph"><p>As the number of levels grow, this value approaches 10%.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="disk-usage">
+<h2>Disk Usage</h2>
+<div class="ulist">
+<ul>
+<li>In general, an SSTable in one level overlaps 10(ish) SSTables in the level below</li>
+<li>Therefore, compaction requires 11x SSTable max size to compact</li>
+<li>One for the SSTable in the higher level</li>
+<li>10 for the overlapped SSTables in the next level</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="ulist">
+<ul>
+<li>Leveled compaction wastes less disk space</li>
+<li><p>
+Obsolete records compact out quickly<div class="ulist">
+<ul>
+<li>A single partition&#8217;s records group as they compact down</li>
+<li>Updated records merge with older records due to this grouping</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="disadvantages">
+<h2>Disadvantages</h2>
+<div class="ulist">
+<ul>
+<li>IO intensive</li>
+<li>Compacts many more SSTables at once over size tiered compaction</li>
+<li>Compacts more frequently than size tiered</li>
+<li>Can&#8217;t ingest data at high insert speeds</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="lagging-behind">
+<h2>Lagging Behind</h2>
+<div class="ulist">
+<ul>
+<li>Leveled compaction switches to size tiered compaction at level 0 when compaction is behind</li>
+<li>Creates larger L0 SSTables to compact with lower levels</li>
+<li>More optimal to compact a larger L0 SSTable to lower levels</li>
+<li>Reduces number of SSTables required for a read</li>
+</ul>
+</div>
+</section>
+<section class="slide transition-green" id="cassandra-operations-compaction-size-tiered">
+<h2>Size Tiered Compaction</h2>
+
+</section>
+<section class="slide" id="size-tiered-compaction">
+<h2>Size Tiered Compaction</h2>
+<div class="paragraph" id="sztrd"><p><strong>Consider a Perfect World</strong></p></div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>In this scenario we will consider a write-only workload with no updates or deletes. All values written are unique, so compacting SStables together merely means combining their data together without eliminating any old data.</p></div>
+<div class="paragraph"><p>Animation 1: Over time, we gain four 100mb SSTable files, each flushed from a MemTable. We will use nice clean numbers in this example to keep the math easy.</p></div>
+<div class="paragraph"><p>Animation 2: The compactor&#8217;s duty is to combine these SSTables into a single SSTable. In this example, the compactor is a size tiered compactor.</p></div>
+<div class="paragraph"><p>Animation 3: The compactor combines all values from the four source 100mb SSTables making a new 400mb SSTable.</p></div>
+<div class="paragraph"><p>Animation 4: The old SSTables are no longer necessary, and the compactor deletes them.</p></div>
+<div class="paragraph"><p>Animation 5 + 6: The scenario plays out again, and now we have two 400mb SSTables.</p></div>
+<div class="paragraph"><p>Animation 7: This occurs two more times until we have four SSTables (<code>min_threshold</code>).</p></div>
+<div class="paragraph"><p>Animation 8: Since we have four 400MB SSTables, the compactor combines them into a new 1600MB SSTable.</p></div>
+<div class="paragraph"><p>Animation 9: The compactor deleted the unneeded 400MB files.</p></div>
+<div class="paragraph"><p>Animation 10: The entire scenario plays out again making a second 1600MB SSTable file. Eventually, when there are four 1600MB SSTable files, the compactor will compact them together as well into a single 64MB SSTable file.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="worst-case-scenario">
+<h2>Worst Case Scenario</h2>
+<div class="paragraph" id="wrstrcse"><p><strong>Requires 50% Hard Drive Space</strong></p></div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>In the absolute worst case scenario with size tiered compaction, you must have 50% of your disk free since a size tiered compaction simply copies (and merges) old, smaller SSTables together.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="unpredictable-reads">
+<h2>Unpredictable Reads</h2>
+<div class="paragraph" id="unprdr"><p><strong>Partition Data Can Possibly be Scattered Amongst Several SSTables</strong></p></div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>One issue/side effect with size tiered compaction is that, in the worst case, a single partition read requires streaming data from all SSTables. For example, let&#8217;s consider a basic scenario of pulling records of users living in Texas.</p></div>
+<div class="paragraph"><p>Animation 1: Here are four new SSTables, each containing a record of a user in Texas. Of course, there would be other records in the SSTable file (including more Texas users), but we will keep the example simple.</p></div>
+<div class="paragraph"><p>Animation 2: These four SSTables compact together into a new SSTable.</p></div>
+<div class="paragraph"><p>Animation 3: Here are another four (unique) users, all in Texas. At this point, to read the entire Texas partition, we will have to read data from five SSTable files.</p></div>
+<div class="paragraph"><p>Animation 4: These four compact together making two SSTable files. The situation is a bit better for a read because we have only two SSTables to seek/stream from.</p></div>
+<div class="paragraph"><p>Animation 5: We continue handling writes of users in Texas, and size tiered compaction continues to operate making larger and larger tiers. However, now notice to read the entire Texas partition, we have to read/seek nine SSTable files! The problem propagates as we acquire more tiers/SSTables.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="stale-data">
+<h2>Stale Data</h2>
+<div class="paragraph" id="stldat"><p><strong>Stale Records in Larger SSTables Take Unnecessary Space</strong></p></div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Although visually this example looks like the last, notice that each partition contains an update for a single user. These users (for whatever contrived example reason you like to come up with), constantly change their names (causing updates).</p></div>
+<div class="paragraph"><p>For example, user #1 Jim has changed names several times (Jeb, Joe, Jan, Jef, and Jon). Users #2 and #3 also change their names often as well. Since the latest names are in the highest tier, all the data in the lower tiers is no longer needed. They unnecessarily take hard drive space. However, there are not four SSTables in any tier, so compaction cannot eliminate the older data. Also, as data climbs up into higher tiers, these tiers compact less often, which possibly means very old stale data may be around for a while.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="realistic-scenario">
+<h2>Realistic Scenario</h2>
+<div class="paragraph" id="rlctsi"><p><strong>SSTable sizes will vary</strong></p></div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>In a real world scenario, compaction drops values due to tombstones and updates. So compacted SSTables will vary in size. Here we examine how size tiered compaction determines what the tiers are and how tables group into those tiers. This image shows several SSTables of varying size. Let&#8217;s examine size tiered compaction&#8217;s algorithm in dividing these SSTables into different tiers.</p></div>
+<div class="paragraph"><p>Animation 1: [Original graphic fades.]</p></div>
+<div class="paragraph"><p>Animation 2: Size tiered compaction considers each SSTable one at a time in no particular order. Here we randomly chose to start with a 100MB partition (well, somewhat random, 100MB is an easy number to do some math on as you&#8217;ll see shortly).</p></div>
+<div class="paragraph"><p>Animation 3: Since this 100MB partition is the first one, we make a new tier.</p></div>
+<div class="paragraph"><p>Animation 4: We place the 100MB partition into this new tier.</p></div>
+<div class="paragraph"><p>Animation 5: From there, we calculate the average size of all the SSTables in the tier. Since this tier has a single 100MB partition, the average size is 100MB (denoted in yellow). We also calculate the minimum and maximum size another SSTable must be to be placed in this tier. The minimum size is 50% of the average (50MB, denoted on the left). The maximum size is 150% of the average (150MB, denoted on the right). You can tune the minimum and maximum percentages by setting <code>bucket_low</code> and <code>bucket_high</code> respectively. The term 'bucket' is synonymous with 'tier'.</p></div>
+<div class="paragraph"><p>Animation 6: Now we consider the 1GB SSTable file. Since 1GB is larger than 150MB&#8230;&#8203;</p></div>
+<div class="paragraph"><p>Animation 7: We create another bucket (tier).</p></div>
+<div class="paragraph"><p>Animation 8: The 1GB SSTable file goes into that new bucket.</p></div>
+<div class="paragraph"><p>Animation 9: And we calculate the average, min, and max for that bucket as well.</p></div>
+<div class="paragraph"><p>Animation 10: Here&#8217;s a 490MB SSTable file.</p></div>
+<div class="paragraph"><p>Animation 11: 490MB doesn&#8217;t fall into the range of any existing tiers, so we make a new bucket.</p></div>
+<div class="paragraph"><p>Animation 12: We place the 490MB SSTable file into the new tier and calculate the average, min, and max as well.</p></div>
+<div class="paragraph"><p>Animation 13: Now we consider a small 20MB SSTable. It doesn&#8217;t qualify for any of the existing buckets.</p></div>
+<div class="paragraph"><p>Animation 14: Size tiered compaction creates a new small bucket to drop all small SSTables into. Size tiered compaction doesn&#8217;t maintain a low or high threshold for this bucket as that is too fine grained for all small SSTables. So all small SSTables are placed in this bucket. You can tune this top value of this buecket (default 50MB) by setting <code>min_sstable_size</code>.</p></div>
+<div class="paragraph"><p>Animation 15: Here&#8217;s a 300MB SSTable.</p></div>
+<div class="paragraph"><p>Animation 16: 300MB falls between the min and max value of an existing bucket, so we place it in that bucket.</p></div>
+<div class="paragraph"><p>Animation 17: After doing so, we recalculate the average for that bucket and update the low and high thresholds for that bucket as well.</p></div>
+<div class="paragraph"><p>Animation 18: Here&#8217;s a 140MB SSTable file.</p></div>
+<div class="paragraph"><p>Animation 19: It falls into the range of an existing bucket as well.</p></div>
+<div class="paragraph"><p>Animation 20: And we update the average, min, and max for that bucket too.</p></div>
+<div class="paragraph"><p>Animation 21: This process of separating SSTables into buckets and updating the average, min, and max value for each bucket continues until all SSTables are sorted into a bucket.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="things-to-note">
+<h2>Things to Note</h2>
+<div class="ulist">
+<ul>
+<li>Groups similarly sized tables together</li>
+<li>Tiers with less than <code>min_threshold</code> (four) SSTables are not considered for compaction</li>
+<li>The smaller the SStables, the "thinner" the distance between <code>min_threshold</code> and <code>max_threshold</code></li>
+<li>SStables qualifying for more than one tier distribute randomly amongst buckets</li>
+<li><p>
+Buckets with more than <code>max_threshold</code> SSTables are trimmed to just that many SSTables<div class="ulist">
+<ul>
+<li>32 by default</li>
+<li>Coldest SSTables dropped</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="hotness">
+<h2>Hotness</h2>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="hot" src=" images/cassandra/operations/compaction/size-tiered/hot.png" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>Size tiered compaction chooses the hottest tier first to compact</li>
+<li>SSTable hotness determined by number of reads per second per partition key</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="similar-sized-tables">
+<h2>Similar Sized Tables</h2>
+<div class="ulist">
+<ul>
+<li>Similar sized SSTables compact together better</li>
+<li>SSTables of similar size will have a fair amount of overlap</li>
+<li>Minimizes write amplification (rewriting large amounts of data simply to copy it)</li>
+<li>Ex: Compacting a 1MB file with a 1TB file (not ideal)</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Compacting a 1MB SSTable with a 1TB SSTable requires rewriting most of the 1TB file contents. There may be up to 1MB of overlap (thus dropping 1MB of data between the two files), but</p></div>
+<div class="paragraph"><p>Write amplification occurs when a large portion of memory (HDD or RAM) is required to update a small portion of data because the update requires rewriting all of the data to a new location. Compaction is one such scenario where to update values in an SSTable or multiple SSTables combined, we must rewrite source SSTables to new locations. Thus our writes have been "amplified" by data that requires rewriting but wasn&#8217;t updated.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="concurrency">
+<h2>Concurrency</h2>
+<div class="ulist">
+<ul>
+<li>Cassandra compacts several tiers concurrently</li>
+<li><p>
+<code>concurrent_compactors</code><div class="ulist">
+<ul>
+<li>Default to smaller of number of disks or number of cores, with a minimum of 2 and a maximum of 8 per CPU core</li>
+</ul>
+</div></p></li>
+<li>Tables concurrently compacting are not considered for new tiers</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="triggering-a-compaction">
+<h2>Triggering a Compaction</h2>
+<div class="ulist">
+<ul>
+<li><p>
+Compaction starts every time a MemTable flushes to an SSTable<div class="ulist">
+<ul>
+<li>MemTable too large, commit log too large, or manual flush</li>
+</ul>
+</div></p></li>
+<li><p>
+Or when the cluster streams SSTable segments to the node<div class="ulist">
+<ul>
+<li>Bootstrap, rebuild, repair</li>
+</ul>
+</div></p></li>
+<li>Compaction continues until there are no more tiers with at least <code>min_threshold</code> tables in it</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="tombstones">
+<h2>Tombstones</h2>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="tombstone" src=" images/cassandra/operations/compaction/size-tiered/tombstone.jpg" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>If no eligible buckets, size tiered compaction compacts a single SSTable</li>
+<li>This eliminates expired tombstones</li>
+<li>The number of expired tombstones must be above 20%</li>
+<li>Largest SSTable chosen first</li>
+<li><p>
+Table must be at least one day old before considered<div class="ulist">
+<ul>
+<li><code>tombstone_compaction_interval</code></li>
+</ul>
+</div></p></li>
+<li>Compaction ensures that tombstones DO NOT overlap old records in other SSTables</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="size-tiered-compaction-2">
+<h2>Size Tiered Compaction</h2>
+<div class="ulist">
+<ul>
+<li>As with everything, there&#8217;s trade offs to using size tiered Compaction</li>
+<li>Size tiered compaction is the default</li>
+<li>Absorbs high write-heavy workloads by procrastinating compaction as long as possible</li>
+<li>Other compaction strategies don&#8217;t handle ingesting data as well as size tiered</li>
+<li><code>compaction_throughput_mb_per_sec</code> controls the compaction IO load on a node</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="major-compactions">
+<h2>Major Compactions</h2>
+<div class="ulist">
+<ul>
+<li>You can issue a major compaction via nodetool</li>
+<li>Compacts all SSTables into a single SSTable</li>
+<li>New monolithic SSTable will qualify for the largest tier</li>
+<li>Future updates/deletes will fall into smaller tiers</li>
+<li>Data in largest tier will become obsolete yet still hog a lot of disk space</li>
+<li>Takes a long time for changes to propagate up to large tier</li>
+<li>Major compactions not recommended</li>
+</ul>
+</div>
+</section>
+<section class="slide transition-green" id="cassandra-operations-compaction-time-window">
+<h2>Time Windowed Compaction</h2>
+
+</section>
+<section class="slide" id="time-windowed-compaction">
+<h2>Time Windowed Compaction</h2>
+<div class="paragraph" id="twcsan"><p><strong>Built for Time Series Data</strong></p></div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Time windowed compaction simply combines all records in each time window into a single SSTable. This works especially well when you are TTLing your data as removing the expired records is simply a matter of deleting the entire SSTable file.</p></div>
+<div class="paragraph"><p>Here will will examine KillrVideo user activity (viewing videos, pause, playback, etc.) for one afternoon/evening. We will set our time windows to hourly.</p></div>
+<div class="paragraph"><p>Animation 1: We will first look at the time of 3:00pm to 4:00pm.</p></div>
+<div class="paragraph"><p>Animation 2: Within the active window, time windowed compaction reuses size tiered compaction. In fact, you can configure size tiered compaction options when you setup time windowed. Here we have three SSTables.</p></div>
+<div class="paragraph"><p>Animation 3: When the window completes (4:00pm), time windowed compaction combines all SSTables in that window into a single SSTable.</p></div>
+<div class="paragraph"><p>Animation 4: Let&#8217;s look at the next time window.</p></div>
+<div class="paragraph"><p>Animation 5: Here we have a bit more data because viewership is going up. Notice size tiered compacts the four yellow similarly sized SSTables into a new (green) SSTable.</p></div>
+<div class="paragraph"><p>Animation 6: 5:00pm rolls around, and time windowed compaction combines all those SSTables together.</p></div>
+<div class="paragraph"><p>Animation 7: Let&#8217;s look at the 5:00pm window.</p></div>
+<div class="paragraph"><p>Animation 8: Even more data this time.</p></div>
+<div class="paragraph"><p>Animation 9: 6:00pm rolls around; combine all the data.</p></div>
+<div class="paragraph"><p>Animation 10: And so on&#8230;&#8203;</p></div>
+<div class="paragraph"><p>Animation 11: And so forth&#8230;&#8203;</p></div>
+<div class="paragraph"><p>Notice the evening is a busy time for user activity on the KillrVideo website.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="time-window-details">
+<h2>Time Window Details</h2>
+<div class="ulist">
+<ul>
+<li>An SSTable spanning two windows simply falls into the second window</li>
+<li><p>
+Good practice to aim for 50ish max SSTables on disk<div class="ulist">
+<ul>
+<li>20ish for active window</li>
+<li>30ish for all past windows combined</li>
+</ul>
+</div></p></li>
+<li>For example: one month of data would have window of a day</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="tuning">
+<h2>Tuning</h2>
+<div class="paragraph"><p><strong>Simply set the window size</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+<code>compaction_window_unit</code><div class="ulist">
+<ul>
+<li>minutes</li>
+<li>hours</li>
+<li>days</li>
+</ul>
+</div></p></li>
+<li><p>
+<code>compaction_window_size</code><div class="ulist">
+<ul>
+<li>Number of units in each window</li>
+</ul>
+</div></p></li>
+<li>Ex: 15 days, 10 minutes, 20 hours, etc.</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="ulist">
+<ul>
+<li><code>expired_sstable_check_frequency_seconds</code> determines how often to check for fully expired (tombstoned) SSTables</li>
+<li>Good to tune when using a TTL</li>
+</ul>
+</div>
+</section>
+<div aria-role="navigation">
+<a class="deck-prev-link" href="#" title="Previous">
+<i class="icon-chevron-with-circle-left"></i>
+</a>
+<a class="deck-next-link" href="#" title="Next">
+<i class="icon-chevron-with-circle-right"></i>
+</a>
+</div>
+<form action="." class="goto-form" method="get">
+<label for="goto-slide">Go to Slide:</label>
+<input id="goto-slide" list="goto-datalist" name="slidenum" type="text" />
+<datalist id="goto-data-list"></datalist>
+<input type="submit" value="Go" />
+</form>
+</div>
+<script src="deck.js/jquery.min.js"></script>
+<script src="deck.js/d3.v2.js"></script>
+<script src="deck.js/jquery-ui.min.js"></script>
+<script src="deck.js/core/deck.core.js"></script>
+<script src="deck.js/extensions/scale/deck.scale.js"></script>
+<script src="deck.js/extensions/goto/deck.goto.js"></script>
+<script src="deck.js/extensions/navigation/deck.navigation.js"></script>
+<script src="deck.js/extensions/split/deck.split.js"></script>
+<script src="deck.js/extensions/animation/deck.animation.js"></script>
+<script src="deck.js/extensions/deck.js-notes/deck.notes.js"></script>
+<script src="deck.js/extensions/goto/deck.goto.js"></script>
+<script src="deck.js/extensions/clone/deck.clone.js"></script>
+<script src="deck.js/extensions/svg/svg.min.js"></script>
+<script src="js/module-6.js"></script>
+<footer>
+<div class="flex-element deck-course">
+<p>&copy; 2016 DataStax. Use only with permission. &bull;
+<span class="course-title">Tuning Cassandra for Performance</span></p>
+</div>
+<div class="flex-element deck-brand">
+<a href="http://academy.datastax.com" target="blank">DataStax Academy</a>
+</div>
+<div class="deck-progressbar">
+<span></span>
+</div>
+</footer>
+<script type="text/javascript">
+  //<![CDATA[
+    (function($, deck, undefined) {
+      $.deck.defaults.keys['previous'] = [8, 33, 37, 39];
+      $.deck.defaults.keys['next'] = [13, 32, 34, 39];
+    
+      $.extend(true, $[deck].defaults, {
+          countNested: false
+      });
+    
+      $.deck('.slide');
+      $.deck('disableScale');
+    })(jQuery, 'deck');
+  //]]>
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+    $(document).bind('deck.change', function(event, from, to) {
+      var width = to / ($.deck('getSlides').length - 1) * 100;
+      $('.deck-progressbar span').css('width', width + '%');
+    });
+  //]]>
+</script>
+</body>
+</html>

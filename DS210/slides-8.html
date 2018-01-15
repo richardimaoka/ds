@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=" http-equiv="Content-Type" />
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="Asciidoctor 1.5.3" name="generator" />
+<title>Operating System and Tools</title>
+<link href="deck.js/themes/style/font.css" rel="stylesheet" />
+<style>
+.conum { display: inline-block; color: white !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; width: 1.2em; height: 1.2em; font-size: 0.9em; font-weight: bold; line-height: 1.2; font-family: Arial, sans-serif; font-style: normal; position: relative; top: -0.1em; }
+.conum * { color: white !important; }
+.conum + b { display: none; }
+.conum:after { content: attr(data-value); }
+.conum:not([data-value]):empty { display: none; }
+.colist table td:first-of-type { padding-right: 0.25em; }
+</style>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{color:rgba(0,0,0,.4)}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top;line-height:1.45}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+<link href="deck.js/core/deck.core.css" rel="stylesheet" />
+<link href="deck.js/extensions/scale/deck.scale.css" media="screen" rel="stylesheet" />
+<link href="deck.js/extensions/goto/deck.goto.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/style/datastax.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/transition/fade.css" media="screen" rel="stylesheet" />
+<link href="deck.js/core/print.css" media="print" rel="stylesheet" />
+<script src="deck.js/modernizr.custom.js"></script>
+</head>
+<body class="article">
+<div class="deck-container">
+<section class="slide" id="title-slide">
+<h1>Operating System and Tools</h1>
+</section>
+<section class="slide transition-green" id="cassandra-operations-operating-system-setup-time-sync">
+<h2>Time Sync</h2>
+<div style="page-break-after: always"></div>
+<div class="ulist">
+<ul>
+<li>Time Stamp Counter (TSC) is the most common clock source-- potentially unstable</li>
+<li>The clocks on all nodes should be synchronized.</li>
+<li>You can use NTP (Network Time Protocol) or other methods.</li>
+</ul>
+</div>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="time sync\ntp" src="images/cassandra/operations/operating-system-setup/time-sync/ntp.png" /></span></p></div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>The vast majority of Cassandra instances run on x86 CPUs, where there are multiple clock sources available.</p></div>
+<div class="paragraph"><p>The fastest and most common is called "tsc" or Time Stamp Counter, which unfortunately isn&#8217;t that stable.</p></div>
+<div class="paragraph"><p>This is the reason why most x86 have so much clock drift</p></div>
+<div class="paragraph"><p>Since it&#8217;s important that the clocks on all nodes be synchronized, you should use NTP (Network Time Protocol) or other methods.</p></div>
+<div class="paragraph"><p>This is required because columns are only overwritten if the timestamp in the new version of the column is more recent than the existing column.</p></div>
+</div>
+</div>
+</section>
+<section class="slide transition-green" id="cassandra-operations-operating-system-setup-kernal-configuration">
+<h2>Kernel Configuration</h2>
+<div style="page-break-after: always"></div>
+</section>
+<section class="slide" id="limits-conf-user-resource-limits">
+<h2>limits.conf (User resource limits)</h2>
+<div class="ulist">
+<ul>
+<li>view current limits</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre><code>ulimit -a</code></pre>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="ulist">
+<ul>
+<li>Single-user systems such as database servers have little use for these limitations</li>
+<li>turn them off globally</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>* - nofile     1048576
+* - memlock    unlimited
+* - fsize      unlimited
+* - data       unlimited
+* - rss        unlimited
+* - stack      unlimited
+* - cpu        unlimited
+* - nproc      unlimited
+* - as         unlimited
+* - locks      unlimited
+* - sigpending unlimited
+* - msgqueue   unlimited</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="sysctl-conf">
+<h2>sysctl.conf</h2>
+<div class="paragraph"><p><strong>swap</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Always disable swap</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>swapoff -a</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>Remove all swap files from /etc/fstab</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>sed -i 's/^\(.*swap\)/#\1/' /etc/fstab</code></pre>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="ulist">
+<ul>
+<li>Edit the sysctl.conf file</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code># only swap if absolutely necessary
+# some kernels have trouble with 0 as a value, so stick with 1
+￼vm.swappiness = 1</code></pre>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Changing Network Kernel Settings</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>net.ipv4.ip_local_port_range = 10000 65535
+net.ipv4.tcp_window_scaling = 1
+net.ipv4.tcp_rmem = 4096 87380 16777216
+net.ipv4.tcp_wmem = 4096 65536 16777216
+net.core.rmem_max = 16777216
+net.core.wmem_max = 16777216
+net.core.netdev_max_backlog = 2500
+net.core.somaxconn = 65000</code></pre>
+</div>
+</div>
+<div class="listingblock notes">
+<div class="content">
+<pre><code>- ipv4 - network stack tuning
+- core - all the networking stack tuning</code></pre>
+</div>
+</div>
+</section>
+<section class="slide transition-green" id="cassandra-operations-tools-linux-tools">
+<h2>Tools</h2>
+
+</section>
+<section class="slide" id="dstat">
+<h2>dstat</h2>
+<div class="ulist">
+<ul>
+<li>Shows all system resources instantly</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>dstat -lrvn 10</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>load average (-l), disk IOPS (-r), vmstats (-v), and network throughput (-n)</li>
+</ul>
+</div>
+<div class="paragraph"><p><span class="image"><img alt="linux tools\dstat2" src="images/cassandra/operations/tools/linux-tools/dstat2.png" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>flip through my screens (ctrl-a n)</li>
+<li>look for vertical consistency (or lack thereof) and outliers</li>
+<li>memory should be around 95% in-use (most of it in the cache column)</li>
+<li>CPUs should be &lt; 1-2% of iowait and 2-15% system time</li>
+<li>network throughput should mirror whatever the application is doing</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="reading-vmstats">
+<h2>Reading vmstats</h2>
+<div class="ulist">
+<ul>
+<li>see all the key metrics in one view</li>
+<li>you can rely on pattern recognition</li>
+<li>fir up a simple cassandra-stress load and watch change in metrics</li>
+<li>going from left to right on a dstat -vn 10:</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>run/blocked/new tasks</strong></p></div>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="linux tools\run blocked newtasks2" src="images/cassandra/operations/tools/linux-tools/run-blocked-newtasks2.png" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>How many processes or threads were running/blocked/created during the sample window.</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>memory</strong></p></div>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="linux tools\memory usage2" src="images/cassandra/operations/tools/linux-tools/memory-usage2.png" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>Used = heap + offheap + ~500MB</li>
+<li>Buffers should be a couple hundred MB</li>
+<li>Cache should account for almost all the remaining memory</li>
+<li>Free memory ~ 200-300MB</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>swap</strong></p></div>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="linux tools\swap2" src="images/cassandra/operations/tools/linux-tools/swap2.png" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>swap columns-- should always be zeros</li>
+<li>any swap activity whatsoever should be eliminated</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>disk throughput</strong></p></div>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="linux tools\disk throughput2" src="images/cassandra/operations/tools/linux-tools/disk-throughput2.png" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>How many bytes are going in and out of the storage every second</li>
+<li>Size the cluster/tuning to keep it 25% or so below peak load</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>interrupts (int) &amp; context switches (ctx)</strong></p></div>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="linux tools\int ctx2" src="images/cassandra/operations/tools/linux-tools/int-ctx2.png" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>An interrupt occurs when a device needs the CPU to do something</li>
+<li>Context switches occur when the kernel has to switch out a task on the CPU</li>
+<li>ctx is almost always &gt; interrupts</li>
+<li>ctx should be 20-40% higher than interrupts</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>user/system/idle/wait/hiq/siq CPU time</strong></p></div>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="linux tools\total cpu usage2" src="images/cassandra/operations/tools/linux-tools/total-cpu-usage2.png" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>User time is CPU time used to run userland processes</li>
+<li>System time is time spent in kernel code</li>
+<li>Idle time is exactly as it sounds</li>
+<li>hiq/siq&#8212;&#8203;time spent processing hardware and soft interrupts</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>network send/recv</strong></p></div>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="linux tools\network send receive2" src="images/cassandra/operations/tools/linux-tools/network-send-receive2.png" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>Shows the amount of data flowing over the network</li>
+<li>shows how much data is flowing over CQL and storage protocols</li>
+<li>difference between network / disk io / CPU usage gives idea of how efficiently a system is running</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="htop">
+<h2>htop</h2>
+<div class="ulist">
+<ul>
+<li>Top provides an ongoing look at CPU processor activity in real time</li>
+<li>Not only will it show you how CPU is used, but it also lists the processes consuming the most CPU first</li>
+<li>but it is fairly limited and doesn&#8217;t look nice</li>
+<li>htop has a nice default display that shows per-core load and all the threads</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><span class="image"><img alt="linux tools\htop" src="images/cassandra/operations/tools/linux-tools/htop.png" /></span></p></div>
+</section>
+<section class="slide" id="iostat">
+<h2>iostat</h2>
+<div class="paragraph"><p><span class="image"><img alt="linux tools\await" height="315" src="images/cassandra/operations/tools/linux-tools/await.png" width="1236" /></span></p></div>
+</section>
+<section class="slide transition-purple" id="exercise-linux-tools">
+<h2>Exercise --Linux Tools</h2>
+
+</section>
+<section class="slide transition-purple" id="courses-DS210-exercise-placeholders-exercise-10">
+<h2>Exercise 10&#8212;&#8203;Linux Tools</h2>
+
+</section>
+<div aria-role="navigation">
+<a class="deck-prev-link" href="#" title="Previous">
+<i class="icon-chevron-with-circle-left"></i>
+</a>
+<a class="deck-next-link" href="#" title="Next">
+<i class="icon-chevron-with-circle-right"></i>
+</a>
+</div>
+<form action="." class="goto-form" method="get">
+<label for="goto-slide">Go to Slide:</label>
+<input id="goto-slide" list="goto-datalist" name="slidenum" type="text" />
+<datalist id="goto-data-list"></datalist>
+<input type="submit" value="Go" />
+</form>
+</div>
+<script src="deck.js/jquery.min.js"></script>
+<script src="deck.js/d3.v2.js"></script>
+<script src="deck.js/jquery-ui.min.js"></script>
+<script src="deck.js/core/deck.core.js"></script>
+<script src="deck.js/extensions/scale/deck.scale.js"></script>
+<script src="deck.js/extensions/goto/deck.goto.js"></script>
+<script src="deck.js/extensions/navigation/deck.navigation.js"></script>
+<script src="deck.js/extensions/split/deck.split.js"></script>
+<script src="deck.js/extensions/animation/deck.animation.js"></script>
+<script src="deck.js/extensions/deck.js-notes/deck.notes.js"></script>
+<script src="deck.js/extensions/goto/deck.goto.js"></script>
+<script src="deck.js/extensions/clone/deck.clone.js"></script>
+<script src="deck.js/extensions/svg/svg.min.js"></script>
+<script src="js/module-8.js"></script>
+<footer>
+<div class="flex-element deck-course">
+<p>&copy; 2016 DataStax. Use only with permission. &bull;
+<span class="course-title">Operating System and Tools</span></p>
+</div>
+<div class="flex-element deck-brand">
+<a href="http://academy.datastax.com" target="blank">DataStax Academy</a>
+</div>
+<div class="deck-progressbar">
+<span></span>
+</div>
+</footer>
+<script type="text/javascript">
+  //<![CDATA[
+    (function($, deck, undefined) {
+      $.deck.defaults.keys['previous'] = [8, 33, 37, 39];
+      $.deck.defaults.keys['next'] = [13, 32, 34, 39];
+    
+      $.extend(true, $[deck].defaults, {
+          countNested: false
+      });
+    
+      $.deck('.slide');
+      $.deck('disableScale');
+    })(jQuery, 'deck');
+  //]]>
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+    $(document).bind('deck.change', function(event, from, to) {
+      var width = to / ($.deck('getSlides').length - 1) * 100;
+      $('.deck-progressbar span').css('width', width + '%');
+    });
+  //]]>
+</script>
+</body>
+</html>

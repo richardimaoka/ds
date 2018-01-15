@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=" http-equiv="Content-Type" />
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="Asciidoctor 1.5.3" name="generator" />
+<title>General Performance Tuning</title>
+<link href="deck.js/themes/style/font.css" rel="stylesheet" />
+<style>
+.conum { display: inline-block; color: white !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; width: 1.2em; height: 1.2em; font-size: 0.9em; font-weight: bold; line-height: 1.2; font-family: Arial, sans-serif; font-style: normal; position: relative; top: -0.1em; }
+.conum * { color: white !important; }
+.conum + b { display: none; }
+.conum:after { content: attr(data-value); }
+.conum:not([data-value]):empty { display: none; }
+.colist table td:first-of-type { padding-right: 0.25em; }
+</style>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{color:rgba(0,0,0,.4)}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top;line-height:1.45}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+<link href="deck.js/core/deck.core.css" rel="stylesheet" />
+<link href="deck.js/extensions/scale/deck.scale.css" media="screen" rel="stylesheet" />
+<link href="deck.js/extensions/goto/deck.goto.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/style/datastax.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/transition/fade.css" media="screen" rel="stylesheet" />
+<link href="deck.js/core/print.css" media="print" rel="stylesheet" />
+<script src="deck.js/modernizr.custom.js"></script>
+</head>
+<body class="article">
+<div class="deck-container">
+<section class="slide" id="title-slide">
+<h1>General Performance Tuning</h1>
+</section>
+<section class="slide transition-green" id="cassandra-operations-cluster-sizing-cluster-sizing">
+<h2>Cluster Sizing</h2>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>The process</strong></p></div>
+<div class="paragraph"><p><strong>You will need to understand</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Application data model and use case</li>
+<li>Volume of data over time</li>
+<li>Velocity of data</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Data Model and Use Case</strong></p></div>
+<div class="ulist">
+<ul>
+<li>What is the read/write bias?</li>
+<li>What are my SLAs?</li>
+<li>Do I need to tier out my data?</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Volume of data</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Estimate the volume based on your application</li>
+<li><p>
+Data per node<div class="ulist">
+<ul>
+<li>(avg amount of data per row) x (number of rows) / # nodes</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Velocity of data</strong></p></div>
+<div class="ulist">
+<ul>
+<li>How many writes per second?</li>
+<li>How many reads per second?</li>
+<li>Volume of data per operation</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Factoring in replication</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Multiply per node volume by Replication Factor</li>
+<li><p>
+Example:<div class="ulist">
+<ul>
+<li>RF = 3</li>
+<li>(Node volume 10G per day per node) x (RF) = 30G per node</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Testing limits</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Use cassandra-stress to simulate workload</li>
+<li>Test production level servers</li>
+<li><p>
+Monitor to find limits<div class="ulist">
+<ul>
+<li>Disk is the first thing to manage</li>
+<li>CPU is second</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Example sizing exercise</strong></p></div>
+<div class="ulist">
+<ul>
+<li>We estimate that KillrVideo will create 100G of data per day</li>
+<li>Writes per second - 150k</li>
+<li>Reads per second - 100k</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Requirements</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Replication factor of 3</li>
+<li>Multiple Data Center</li>
+<li>25ms read latency 95th percentile</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Testing summary</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+Node capabilities to maintain &lt; 25ms read<div class="ulist">
+<ul>
+<li>At maximum packet size, 50k writes/sec</li>
+<li>At maximum packet size, 40k reads/sec</li>
+<li>4T per node to allow for compaction overhead</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Sizing for Volume</strong></p></div>
+<div class="ulist">
+<ul>
+<li class="slide">(100G per day) x (30 days) X (6 months) = 18T data</li>
+<li class="slide">(18T data) x (RF 3) = 54 T total cluster load</li>
+<li class="slide">(54 T total data) / (4T max per node) = 14 nodes</li>
+<li class="slide">(14 nodes) x (2 data centers) = 28 nodes total</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Sizing for Velocity</strong></p></div>
+<div class="ulist">
+<ul>
+<li class="slide">(150k writes/sec load) / (50k writes/sec per node) = 3 nodes</li>
+<li class="slide">Volume capacity covers write capacity</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Future capacity</strong></p></div>
+<div class="ulist">
+<ul>
+<li class="slide">Validate your assumptions often</li>
+<li class="slide">Monitor for changes over time</li>
+<li class="slide">Plan for increasing cluster size before you need it</li>
+<li class="slide">Be ready to draw down if needed</li>
+</ul>
+</div>
+</section>
+<section class="slide transition-green" id="cassandra-operations-benchmark-soaktests-cassandra-stress">
+<h2>cassandra-stress</h2>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Java-based stress testing utility for basic benchmarking and load testing a Cassandra cluster.</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+Use the cassandra-stress to:<div class="ulist">
+<ul>
+<li>Quickly determine how a schema performs.</li>
+<li>Understand how your database scales.</li>
+<li>Optimize your data model and settings.</li>
+<li>Determine production capacity.</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Data modeling choices can greatly affect application performance.</p></div>
+<div class="paragraph"><p>Significant load testing over several trials is the best method for discovering issues with a particular data model. The cassandra-stress tool is an effective tool for populating a cluster and stress testing CQL tables and queries.</p></div>
+<div class="paragraph"><p>Use the cassandra-stress to: Quickly determine how a schema performs, understand how your database scales, optimize your data model and settings, and determine production capacity.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>The new stress YAML profile</strong></p></div>
+<div class="ulist">
+<ul>
+<li>The new cassandra-stress now supports a YAML based profile that is used to define your specific schema with any potential compaction strategy, cache settings and types you wish, without having to write a custom tool.</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>The new stress YAML profile</strong></p></div>
+<div class="ulist">
+<ul>
+<li>The YAML file is split into a few sections:</li>
+<li>DDL &#8212; for defining your schema</li>
+<li>Column Distributions &#8212; for defining the shape and size of each column globally and within each partition</li>
+<li>Insert Distributions &#8212; for defining how the data is written during the stress test</li>
+<li>DML	&#8212; for defining how the data is queried during the stress test</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>DDL</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Define the keyspace and table information</li>
+<li>If the schema is not yet defined the stress tool will create it the first time you run stress on this profile</li>
+<li>If you have already created the schema separately then you only need to define the keyspace and table names</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><span class="image"><img alt="cassandra stress\dml" src="images/cassandra/operations/benchmark-soaktests/cassandra-stress/dml.png" /></span></p></div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Column Distributions</strong></p></div>
+<div class="ulist">
+<ul>
+<li>The 'columnspec' section describes the different distributions to use for each column</li>
+<li>Next, the 'columnspec' section describes the different distributions to use for each column.  These distributions model the size of the data in the column, the number of unique values, and the clustering of them within a given partition</li>
+<li>These distributions are used to auto generate data that ''looks'' like what you would see in reality</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>The possible distributions are:</strong></p></div>
+<div class="ulist">
+<ul>
+<li>EXP(min..max) &#8212; An exponential distribution over the range [min..max]</li>
+<li>EXTREME(min..max,shape) &#8212; An extreme value (Weibull) distribution over the range [min..max]</li>
+<li>GAUSSIAN(min..max,stdvrng) &#8212; A gaussian/normal distribution, where mean=(min+max)/2, and stdev is (mean-min)/stdvrng</li>
+<li>GAUSSIAN(min..max,mean,stdev) &#8212; A gaussian/normal distribution, with explicitly defined mean and stdev</li>
+<li>UNIFORM(min..max) &#8212; A uniform distribution over the range [min, max]</li>
+<li>FIXED(val) &#8212; A fixed distribution, always returning the same value</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>For each column you can specify (note the defaults):</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Size distribution &#8212; Defines the distribution of sizes for text, blob, set and list types  (default of UNIFORM(4..8))</li>
+<li>Population distribution &#8212; Defines the distribution of unique values for the column values (default of UNIFORM(1..100B))</li>
+<li>Cluster distribution &#8212; Defines the  distribution for the number of clustering prefixes within a given partition (default of FIXED(1))</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><span class="image"><img alt="cassandra stress\column distributions" src="images/cassandra/operations/benchmark-soaktests/cassandra-stress/column_distributions.png" /></span></p></div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Insert Distributions</strong></p></div>
+<div class="ulist">
+<ul>
+<li>The insert section lets you specify how data is inserted during stress.</li>
+<li><p>
+For each insert operation you can specify the following distributions/ratios:<div class="ulist">
+<ul>
+<li>Partition distribution &#8212; The number of partitions to update per batch (default FIXED(1))</li>
+<li>select distribution ratio &#8212; The ratio of rows each partition should insert as a proportion of the total possible rows for the partition (as defined by the clustering distribution columns). default FIXED(1)/1</li>
+<li>Batch type &#8212; The type of CQL batch to use. Either LOGGED/UNLOGGED (default LOGGED)</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><span class="image"><img alt="cassandra stress\insert distributions" src="images/cassandra/operations/benchmark-soaktests/cassandra-stress/insert_distributions.png" /></span></p></div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>DML</strong></p></div>
+<div class="ulist">
+<ul>
+<li>You can specify any CQL query on the table by naming them under the 'queries' section.</li>
+<li>The 'fields' field specifies if the bind variables should be picked from the same row or across all rows in the partition</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><span class="image"><img alt="cassandra stress\dml2" src="images/cassandra/operations/benchmark-soaktests/cassandra-stress/dml2.png" /></span></p></div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Inserts</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>./bin/cassandra-stress user profile=./blogpost.yaml ops\(insert=1\)</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>Without any other options stress will run our inserts starting with 4 threads and increasing them till it reaches a limit</li>
+<li>All inserts are done with the native transport and prepared statements</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Queries</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>./bin/cassandra-stress user profile=blogpost.yaml ops\(singlepost=1\)</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>./bin/cassandra-stress user profile=./blogpost.yaml ops\(timeline=1\)</code></pre>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Mixed</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>./bin/cassandra-stress user profile=./blogpost.yaml ops\(singlepost=2,timeline=1,insert=1\)</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>We can also run many types of queries and inserts at once.</li>
+<li>This syntax sends three queries for every one insert.</li>
+</ul>
+</div>
+</section>
+<section class="slide transition-purple" id="exercise-cassandra-stress">
+<h2>Exercise --cassandra-stress</h2>
+
+</section>
+<section class="slide transition-purple" id="courses-DS210-exercise-placeholders-exercise-4">
+<h2>Exercise 4&#8212;&#8203;cassandra-stress</h2>
+
+</section>
+<div aria-role="navigation">
+<a class="deck-prev-link" href="#" title="Previous">
+<i class="icon-chevron-with-circle-left"></i>
+</a>
+<a class="deck-next-link" href="#" title="Next">
+<i class="icon-chevron-with-circle-right"></i>
+</a>
+</div>
+<form action="." class="goto-form" method="get">
+<label for="goto-slide">Go to Slide:</label>
+<input id="goto-slide" list="goto-datalist" name="slidenum" type="text" />
+<datalist id="goto-data-list"></datalist>
+<input type="submit" value="Go" />
+</form>
+</div>
+<script src="deck.js/jquery.min.js"></script>
+<script src="deck.js/d3.v2.js"></script>
+<script src="deck.js/jquery-ui.min.js"></script>
+<script src="deck.js/core/deck.core.js"></script>
+<script src="deck.js/extensions/scale/deck.scale.js"></script>
+<script src="deck.js/extensions/goto/deck.goto.js"></script>
+<script src="deck.js/extensions/navigation/deck.navigation.js"></script>
+<script src="deck.js/extensions/split/deck.split.js"></script>
+<script src="deck.js/extensions/animation/deck.animation.js"></script>
+<script src="deck.js/extensions/deck.js-notes/deck.notes.js"></script>
+<script src="deck.js/extensions/goto/deck.goto.js"></script>
+<script src="deck.js/extensions/clone/deck.clone.js"></script>
+<script src="deck.js/extensions/svg/svg.min.js"></script>
+<script src="js/module-4.js"></script>
+<footer>
+<div class="flex-element deck-course">
+<p>&copy; 2016 DataStax. Use only with permission. &bull;
+<span class="course-title">General Performance Tuning</span></p>
+</div>
+<div class="flex-element deck-brand">
+<a href="http://academy.datastax.com" target="blank">DataStax Academy</a>
+</div>
+<div class="deck-progressbar">
+<span></span>
+</div>
+</footer>
+<script type="text/javascript">
+  //<![CDATA[
+    (function($, deck, undefined) {
+      $.deck.defaults.keys['previous'] = [8, 33, 37, 39];
+      $.deck.defaults.keys['next'] = [13, 32, 34, 39];
+    
+      $.extend(true, $[deck].defaults, {
+          countNested: false
+      });
+    
+      $.deck('.slide');
+      $.deck('disableScale');
+    })(jQuery, 'deck');
+  //]]>
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+    $(document).bind('deck.change', function(event, from, to) {
+      var width = to / ($.deck('getSlides').length - 1) * 100;
+      $('.deck-progressbar span').css('width', width + '%');
+    });
+  //]]>
+</script>
+</body>
+</html>

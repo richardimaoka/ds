@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="333px" height="28px" viewBox="0 0 333 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.4.2 (15855) - http://www.bohemiancoding.com/sketch -->
+    <title>500 + 1500 + 1000</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Orange-Blank-4-nodes-Copy" sketch:type="MSArtboardGroup" transform="translate(-2666.000000, -853.000000)" font-size="36" font-family="Helvetica Neue" font-weight="bold">
+            <g id="500-+-1500-+-1000" sketch:type="MSLayerGroup" transform="translate(2666.000000, 845.000000)">
+                <text id="500" sketch:type="MSTextLayer" fill="#FFFFFF">
+                    <tspan x="0" y="35">500</tspan>
+                </text>
+                <text id="1500" sketch:type="MSTextLayer" fill="#FFFFFF">
+                    <tspan x="253" y="35">1500</tspan>
+                </text>
+                <text id="1000" sketch:type="MSTextLayer" fill="#FFFF00">
+                    <tspan x="121" y="35">1000</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

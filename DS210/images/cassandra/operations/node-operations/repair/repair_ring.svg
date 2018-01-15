@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="548px" height="548px" viewBox="0 0 548 548" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.7 (28169) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 2</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-2">
+            <g id="ring_colored_wider">
+                <rect id="Rectangle-path" fill="#FFFFFF" x="0" y="0" width="548" height="548"></rect>
+                <path d="M274,274 L274,28 C339.243257,28 401.814319,53.9177827 447.948268,100.051732 L274,274" id="Shape" stroke="#FFFFFF" fill="#0CB6E1"></path>
+                <path d="M274,274 L447.948268,100.051732 C494.082217,146.185681 520,208.756743 520,274 L274,274" id="Shape" stroke="#FFFFFF" fill="#9BD333"></path>
+                <path d="M274,274 L520,274 C520,339.243257 494.082217,401.814319 447.948268,447.948268 L274,274" id="Shape" stroke="#FFFFFF" fill="#007A97"></path>
+                <path d="M274,274 L447.948268,447.948268 C401.814319,494.082217 339.243257,520 274,520 L274,274" id="Shape" stroke="#FFFFFF" fill="#CA6014"></path>
+                <path d="M274,274 L274,520 C208.756743,520 146.185681,494.082217 100.051732,447.948268 L274,274" id="Shape" stroke="#FFFFFF" fill="#F3C716"></path>
+                <path d="M274,274 L100.051732,447.948268 C53.9177827,401.814319 28,339.243257 28,274 L274,274" id="Shape" stroke="#FFFFFF" fill="#227B63"></path>
+                <path d="M274,274 L28,274 C28,208.756743 53.9177827,146.185681 100.051732,100.051732 L274,274" id="Shape" stroke="#FFFFFF" fill="#8031A7"></path>
+                <path d="M274,274 L100.051732,100.051732 C146.185681,53.9177827 208.756743,28 274,28 L274,274" id="Shape" stroke="#FFFFFF" fill="#C41426"></path>
+                <circle id="Oval" fill="#FFFFFF" cx="274" cy="274" r="228"></circle>
+            </g>
+            <g id="ring_colored" transform="translate(25.000000, 25.000000)">
+                <g id="Group">
+                    <rect id="Rectangle-path" x="0" y="0" width="498" height="498"></rect>
+                    <path d="M249,249 L249,25 C308.408494,25 365.38377,48.5999322 407.391919,90.608081 L249,249" id="Shape" stroke="#FFFFFF" fill="#9BD333"></path>
+                    <path d="M249,249 L407.391919,90.608081 C449.400068,132.61623 473,189.591506 473,249 L249,249" id="Shape" stroke="#FFFFFF" fill="#007A97"></path>
+                    <path d="M249,249 L473,249 C473,308.408494 449.400068,365.38377 407.391919,407.391919 L249,249" id="Shape" stroke="#FFFFFF" fill="#CA5F14"></path>
+                    <path d="M249,249 L407.391919,407.391919 C365.38377,449.400068 308.408494,473 249,473 L249,249" id="Shape" stroke="#FFFFFF" fill="#F3C716"></path>
+                    <path d="M249,249 L249,473 C189.591506,473 132.61623,449.400068 90.608081,407.391919 L249,249" id="Shape" stroke="#FFFFFF" fill="#227B63"></path>
+                    <path d="M249,249 L90.608081,407.391919 C48.5999322,365.38377 25,308.408494 25,249 L249,249" id="Shape" stroke="#FFFFFF" fill="#8031A7"></path>
+                    <path d="M249,249 L25,249 C25,189.591506 48.5999322,132.61623 90.608081,90.608081 L249,249" id="Shape" stroke="#FFFFFF" fill="#C41426"></path>
+                    <path d="M249,249 L90.608081,90.608081 C132.61623,48.5999322 189.591506,25 249,25 L249,249" id="Shape" stroke="#FFFFFF" fill="#0CB6E1"></path>
+                    <circle id="Oval" fill="#FFFFFF" cx="249" cy="249" r="205"></circle>
+                </g>
+            </g>
+            <g id="ring_colored-smaller" transform="translate(52.000000, 52.000000)">
+                <g id="Group">
+                    <rect id="Rectangle-path" x="0" y="0" width="444" height="444"></rect>
+                    <path d="M222,222 L222,22 C275.043298,22 325.914081,43.0713681 363.421356,80.5786438 L222,222" id="Shape" stroke="#FFFFFF" fill="#007A97"></path>
+                    <path d="M222,222 L363.421356,80.5786438 C400.928632,118.085919 422,168.956702 422,222 L222,222" id="Shape" stroke="#FFFFFF" fill="#CA6014"></path>
+                    <path d="M222,222 L422,222 C422,275.043298 400.928632,325.914081 363.421356,363.421356 L222,222" id="Shape" stroke="#FFFFFF" fill="#F3C716"></path>
+                    <path d="M222,222 L363.421356,363.421356 C325.914081,400.928632 275.043298,422 222,422 L222,222" id="Shape" stroke="#FFFFFF" fill="#227B63"></path>
+                    <path d="M222,222 L222,422 C168.956702,422 118.085919,400.928632 80.5786438,363.421356 L222,222" id="Shape" stroke="#FFFFFF" fill="#8031A7"></path>
+                    <path d="M222,222 L80.5786438,363.421356 C43.0713681,325.914081 22,275.043298 22,222 L222,222" id="Shape" stroke="#FFFFFF" fill="#C41425"></path>
+                    <path d="M222,222 L22,222 C22,168.956702 43.0713681,118.085919 80.5786438,80.5786438 L222,222" id="Shape" stroke="#FFFFFF" fill="#0CB7E1"></path>
+                    <path d="M222,222 L80.5786438,80.5786438 C118.085919,43.0713681 168.956702,22 222,22 L222,222" id="Shape" stroke="#FFFFFF" fill="#9CD233"></path>
+                    <circle id="Oval" fill="#FFFFFF" cx="220" cy="222" r="180"></circle>
+                </g>
+            </g>
+            <text id="21-40" font-family="Arial-Black, Arial Black" font-size="20" font-weight="700" fill="#000000">
+                <tspan x="294" y="138">21-40</tspan>
+            </text>
+            <text id="41-60" font-family="Arial-Black, Arial Black" font-size="20" font-weight="700" fill="#000000">
+                <tspan x="365" y="221">41-60</tspan>
+            </text>
+            <text id="0-20" font-family="Arial-Black, Arial Black" font-size="20" font-weight="700" fill="#000000">
+                <tspan x="189" y="138">0-20</tspan>
+            </text>
+        </g>
+    </g>
+</svg>

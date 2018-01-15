@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=" http-equiv="Content-Type" />
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="Asciidoctor 1.5.3" name="generator" />
+<title>Servers</title>
+<link href="deck.js/themes/style/font.css" rel="stylesheet" />
+<style>
+.conum { display: inline-block; color: white !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; width: 1.2em; height: 1.2em; font-size: 0.9em; font-weight: bold; line-height: 1.2; font-family: Arial, sans-serif; font-style: normal; position: relative; top: -0.1em; }
+.conum * { color: white !important; }
+.conum + b { display: none; }
+.conum:after { content: attr(data-value); }
+.conum:not([data-value]):empty { display: none; }
+.colist table td:first-of-type { padding-right: 0.25em; }
+</style>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{color:rgba(0,0,0,.4)}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top;line-height:1.45}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+<link href="deck.js/core/deck.core.css" rel="stylesheet" />
+<link href="deck.js/extensions/scale/deck.scale.css" media="screen" rel="stylesheet" />
+<link href="deck.js/extensions/goto/deck.goto.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/style/datastax.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/transition/fade.css" media="screen" rel="stylesheet" />
+<link href="deck.js/core/print.css" media="print" rel="stylesheet" />
+<script src="deck.js/modernizr.custom.js"></script>
+</head>
+<body class="article">
+<div class="deck-container">
+<section class="slide" id="title-slide">
+<h1>Servers</h1>
+</section>
+<section class="slide transition-green" id="cassandra-operations-servers-hardware-selection">
+<h2>Hardware Selection</h2>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>CHOOSE the right balance of the following</strong></p></div>
+<div class="ulist">
+<ul>
+<li>memory</li>
+<li>CPU</li>
+<li>disk type</li>
+<li>number of nodes</li>
+<li>network</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>AVOID</strong></p></div>
+<div class="ulist">
+<ul>
+<li>SAN storage</li>
+<li>NAS devices</li>
+<li>NFS</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="memory">
+<h2>Memory</h2>
+<div class="paragraph"><p><strong>For both dedicated hardware and virtual environments:</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Production: 16GB to 64GB; the minimum is 8GB.</li>
+<li>Development in non-loading testing environments: no less than 4GB.</li>
+<li>More memory = better read performance</li>
+<li>More RAM = memtables hold more recently written data</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="cpu">
+<h2>CPU</h2>
+<div class="paragraph"><p><strong>Cassandra is highly concurrent and uses as many CPU cores as available:</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+Production environments:<div class="ulist">
+<ul>
+<li>For dedicated hardware, 16-core CPU processors are the current price-performance sweet spot.</li>
+<li>For virtual environments, 4 to 8-core CPU processors.</li>
+</ul>
+</div></p></li>
+<li><p>
+Development in non-loading testing environments:<div class="ulist">
+<ul>
+<li>For dedicated hardware, 2-core CPU processors.</li>
+<li>For virtual environments, 2-core CPU processors.</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="disks">
+<h2>Disks</h2>
+<div class="paragraph"><p><strong>Solid State Drives (SSDs)</strong></p></div>
+<div class="ulist">
+<ul>
+<li>SSD is absolutely the preferred solution for every workload</li>
+<li>Provide extremely low-latency response times for random reads while supplying ample sequential write performance for compaction operations</li>
+<li>Has no moving parts to fail</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Hard Disk Drives (HDDs)</strong></p></div>
+<div class="ulist">
+<ul>
+<li>by far the cheapest storage available</li>
+<li><p>
+They still show up in new systems for a few reasons:<div class="ulist">
+<ul>
+<li>Hardware vendors mark SSDs up by 100-2000%</li>
+<li>7200RPM SATA is aroudn $0.05/GB while a Samsung 1TB MLC is $0.50</li>
+<li>High capacity is still easier to come by</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>When do HDDs make sense?</strong></p></div>
+<div class="ulist">
+<ul>
+<li>The answer is usually never</li>
+<li>There are exceptions, such as mostly-write workloads + DTCS where seeking isn&#8217;t as big of a problem</li>
+<li>When HDDs are the only option, get as much RAM as you can. Every cache hit in RAM means less IO on the drive.</li>
+<li>IO on the drive for an HDD is pretty much the worst thing you can do.</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="network">
+<h2>Network</h2>
+<div class="ulist">
+<ul>
+<li>You should bind your interfaces to separate Network Interface Cards (NIC).</li>
+<li>Recommended bandwidth is 1000 Mbit/s (gigabit) or greater.</li>
+<li>Thrift/native protocols use the rpc_address.</li>
+<li>Cassandra&#8217;s internal storage protocol uses the listen_address.</li>
+</ul>
+</div>
+</section>
+<section class="slide transition-green" id="cassandra-operations-servers-cloud">
+<h2>Cloud</h2>
+
+</section>
+<section class="slide" id="provisioning">
+<h2>Provisioning</h2>
+<div class="ulist">
+<ul>
+<li>There are easy one click deployment patterns for Cassandra and  DSE development and test deployments in most of the major public clouds.</li>
+<li>For production use OpsCenter LCM in 6.0 + for provisioning and configuration management. You will have to self provision the instances, opscenter does installation and config.</li>
+<li>If you don&#8217;t have access to opsc there are Chef / Ansible recipes / playbooks for DSE out there.</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="picking-your-instance-type">
+<h2>Picking Your Instance Type</h2>
+<div class="paragraph"><p><strong>Disks</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Ephemeral is fastest</li>
+<li>The world is moving toward elastic / non ephemeral volumes</li>
+<li>If an ephemeral volume fails, terminate and get a fresh box. Tell tell sign is bitrot / corrupted sstables.</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="ulist">
+<ul>
+<li><p>
+AWS<div class="ulist">
+<ul>
+<li>GP2 or IO2 EBS if you can&#8217;t afford ephemerals</li>
+<li>Get big ones, IO latencies get better as the disk volumes increase up to 4TB. Get at least 3 TB&#8217;s on the GP2&#8217;s</li>
+</ul>
+</div></p></li>
+<li><p>
+Google<div class="ulist">
+<ul>
+<li>Their elastic volumes always have the same tight latencies</li>
+<li>It&#8217;s been observed in some customer tests that pd-ssd is actually faster than local-ssd</li>
+</ul>
+</div></p></li>
+<li><p>
+Azure<div class="ulist">
+<ul>
+<li>Today mostly ephemeral is used</li>
+<li>Premium storage is rolling out pretty fast</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>CPU Considerations</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+Hyperthreads<div class="ulist">
+<ul>
+<li>You don&#8217;t get a real CPU most of the time, tune accordingly</li>
+</ul>
+</div></p></li>
+<li><p>
+CPU steal / noisy neighbors<div class="ulist">
+<ul>
+<li>If you see CPU steal, terminate your box and get a new one, it means you have a noisy neighbor</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Neworking considerations</strong></p></div>
+<div class="paragraph"><p><strong>Multi DC options include</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+AWS<div class="ulist">
+<ul>
+<li>mutli regions can&#8217;t communicate via internal IP, you need to figure out networking yourself or use limited number of Security rules</li>
+</ul>
+</div></p></li>
+<li><p>
+Azure<div class="ulist">
+<ul>
+<li>Vnet 2 venet&#8201;&#8212;&#8201;slow, good for small workloads</li>
+<li>Azure has options for fatter pipes one of which can even go to your physical DC for hybrid deployments</li>
+<li>Use public IPs</li>
+<li>Do not use VPN gateways</li>
+<li>Express Route might be viable</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="ulist">
+<ul>
+<li><p>
+Google<div class="ulist">
+<ul>
+<li>Flat network. No config necessary, it&#8217;s great</li>
+</ul>
+</div></p></li>
+<li><p>
+Enhanced networking<div class="ulist">
+<ul>
+<li>AWS thing you need to turn on on some instance types to get performance</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Security</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+AWS<div class="ulist">
+<ul>
+<li>Volume encryption is available for EBS</li>
+</ul>
+</div></p></li>
+<li><p>
+Azure<div class="ulist">
+<ul>
+<li>Our templates have some issues. Need to set up network security groups (NSG)</li>
+</ul>
+</div></p></li>
+<li><p>
+Google<div class="ulist">
+<ul>
+<li>Largely secure by default. Everything goes through their multifactor auth.</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<div aria-role="navigation">
+<a class="deck-prev-link" href="#" title="Previous">
+<i class="icon-chevron-with-circle-left"></i>
+</a>
+<a class="deck-next-link" href="#" title="Next">
+<i class="icon-chevron-with-circle-right"></i>
+</a>
+</div>
+<form action="." class="goto-form" method="get">
+<label for="goto-slide">Go to Slide:</label>
+<input id="goto-slide" list="goto-datalist" name="slidenum" type="text" />
+<datalist id="goto-data-list"></datalist>
+<input type="submit" value="Go" />
+</form>
+</div>
+<script src="deck.js/jquery.min.js"></script>
+<script src="deck.js/d3.v2.js"></script>
+<script src="deck.js/jquery-ui.min.js"></script>
+<script src="deck.js/core/deck.core.js"></script>
+<script src="deck.js/extensions/scale/deck.scale.js"></script>
+<script src="deck.js/extensions/goto/deck.goto.js"></script>
+<script src="deck.js/extensions/navigation/deck.navigation.js"></script>
+<script src="deck.js/extensions/split/deck.split.js"></script>
+<script src="deck.js/extensions/animation/deck.animation.js"></script>
+<script src="deck.js/extensions/deck.js-notes/deck.notes.js"></script>
+<script src="deck.js/extensions/goto/deck.goto.js"></script>
+<script src="deck.js/extensions/clone/deck.clone.js"></script>
+<script src="deck.js/extensions/svg/svg.min.js"></script>
+<script src="js/module-9.js"></script>
+<footer>
+<div class="flex-element deck-course">
+<p>&copy; 2016 DataStax. Use only with permission. &bull;
+<span class="course-title">Servers</span></p>
+</div>
+<div class="flex-element deck-brand">
+<a href="http://academy.datastax.com" target="blank">DataStax Academy</a>
+</div>
+<div class="deck-progressbar">
+<span></span>
+</div>
+</footer>
+<script type="text/javascript">
+  //<![CDATA[
+    (function($, deck, undefined) {
+      $.deck.defaults.keys['previous'] = [8, 33, 37, 39];
+      $.deck.defaults.keys['next'] = [13, 32, 34, 39];
+    
+      $.extend(true, $[deck].defaults, {
+          countNested: false
+      });
+    
+      $.deck('.slide');
+      $.deck('disableScale');
+    })(jQuery, 'deck');
+  //]]>
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+    $(document).bind('deck.change', function(event, from, to) {
+      var width = to / ($.deck('getSlides').length - 1) * 100;
+      $('.deck-progressbar span').css('width', width + '%');
+    });
+  //]]>
+</script>
+</body>
+</html>

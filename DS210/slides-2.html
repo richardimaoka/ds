@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=" http-equiv="Content-Type" />
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="Asciidoctor 1.5.3" name="generator" />
+<title>Node Operations</title>
+<link href="deck.js/themes/style/font.css" rel="stylesheet" />
+<style>
+.conum { display: inline-block; color: white !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; width: 1.2em; height: 1.2em; font-size: 0.9em; font-weight: bold; line-height: 1.2; font-family: Arial, sans-serif; font-style: normal; position: relative; top: -0.1em; }
+.conum * { color: white !important; }
+.conum + b { display: none; }
+.conum:after { content: attr(data-value); }
+.conum:not([data-value]):empty { display: none; }
+.colist table td:first-of-type { padding-right: 0.25em; }
+</style>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{color:rgba(0,0,0,.4)}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top;line-height:1.45}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+<link href="deck.js/core/deck.core.css" rel="stylesheet" />
+<link href="deck.js/extensions/scale/deck.scale.css" media="screen" rel="stylesheet" />
+<link href="deck.js/extensions/goto/deck.goto.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/style/datastax.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/transition/fade.css" media="screen" rel="stylesheet" />
+<link href="deck.js/core/print.css" media="print" rel="stylesheet" />
+<script src="deck.js/modernizr.custom.js"></script>
+</head>
+<body class="article">
+<div class="deck-container">
+<section class="slide" id="title-slide">
+<h1>Node Operations</h1>
+</section>
+<section class="slide transition-green" id="cassandra-operations-node-operations-bootstrap">
+<h2>Bootstrapping</h2>
+
+</section>
+<section class="slide" id="adding-nodes">
+<h2>Adding nodes</h2>
+<div class="paragraph"><p><strong>Why would we want to add more nodes to our cluster?</strong></p></div>
+<div class="paragraph"><p><span class="image"><img alt="bootstrap\cluster" src="images/cassandra/operations/node-operations/bootstrap/cluster.png" /></span></p></div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>You might want to considering adding a new node if you have:</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+Reached data capacity problem<div class="ulist">
+<ul>
+<li>Your data has outgrown the node&#8217;s hardware capacity</li>
+</ul>
+</div></p></li>
+<li><p>
+Reached traffic capacity<div class="ulist">
+<ul>
+<li>Your application needs more rapid response with less latency</li>
+</ul>
+</div></p></li>
+<li><p>
+Need more operational headroom<div class="ulist">
+<ul>
+<li>Need more resources for node repair, compaction, and other resource intensive operations</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="adding-nodes-best-practices">
+<h2>Adding Nodes: Best Practices</h2>
+<div class="paragraph"><p><strong>Single-token Nodes</strong></p></div>
+<div class="paragraph"><p><span class="image"><img alt="bootstrap\Group 2" height="320" src="images/cassandra/operations/node-operations/bootstrap/Group 2.png" width="367" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>Double the size of a cluster (single-token nodes)</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Can minimize latency impact to a production load, where token recalculation and data movement can affect performance</p></div>
+<div class="paragraph"><p>Hot spots are minimized during data movement to new nodes</p></div>
+<div class="paragraph"><p>For single node clusters, adding one node at a time isn&#8217;t a great idea</p></div>
+<div class="paragraph"><p>This may cause cluster to become unbalanced</p></div>
+<div class="paragraph"><p>Don’t leave the cluster unbalanced</p></div>
+<div class="paragraph"><p>Adding a single node creates a much more complex token generation scheme</p></div>
+<div class="paragraph"><p>A token inserted between two others will leave cluster unbalanced</p></div>
+<div class="paragraph"><p>Have to regenerate all tokens and move data to rebalance ring</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Vnodes</strong></p></div>
+<div class="ulist">
+<ul>
+<li>For vnode clusters, we can increment the size of the cluster if more nodes are needed</li>
+</ul>
+</div>
+<div class="paragraph"><p><span class="image"><img alt="bootstrap\new nodes" src="images/cassandra/operations/node-operations/bootstrap/new_nodes.png" /></span></p></div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>For node clusters, we an increment the size of the cluster if more nodes are needed</p></div>
+<div class="paragraph"><p>Token ranges are distributed and token range assignment is automatic</p></div>
+<div class="paragraph"><p>Several token ranges will be split on each node, therefore each node will stream some data</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="ulist">
+<ul>
+<li>Wait a period a time before adding each additional node (single-token and vnodes).</li>
+<li>Follow the '2 minute rule'.</li>
+<li>This ensures the range announcement is known to all nodes before the next one begins entering the cluster.</li>
+</ul>
+</div>
+<div class="paragraph"><p><span class="image"><img alt="bootstrap\wait" height="150" src="images/cassandra/operations/node-operations/bootstrap/wait.png" width="485" /></span></p></div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Bootstrapping multiple nodes the same is discouraged and not even possible on newer versions of Cassandra.</p></div>
+<div class="paragraph"><p>Follow the '2 minute rule'.</p></div>
+<div class="paragraph"><p>This ensures the range announcement is known to all nodes before the next one begins entering the cluster.</p></div>
+<div class="paragraph"><p>Applies to both vnodes and single-token clusters.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="node-setup">
+<h2>Node Setup</h2>
+<div class="paragraph"><p><strong>Four main parameters of a node for bootstrapping</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+These are configured in the cassandra.yaml file:<div class="ulist">
+<ul>
+<li>cluster_name</li>
+<li>rpc_address</li>
+<li>listen_address</li>
+<li>-seeds</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>When we set up a new node, bare in mind that the four parameters of a node are
+Cluster name, rpc address, listen address and seeds
+These are configured in the cassandra.yaml file</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="bootstrapping">
+<h2>Bootstrapping</h2>
+<div class="ulist">
+<ul>
+<li>So what is Bootstrapping in Cassandra?</li>
+<li>simple process but pretty critical</li>
+<li>can be a long running process</li>
+<li>node annonuces itself to ring using seed node</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Bootstrapping process by which the new node gets its data from other nodes
+Before bootstrapping starts:
+* Cassandra shell file executes
+* Cassandra daemon runs
+* Finally, bootstrapping kicks off</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="the-bootstrapping-process">
+<h2>The Bootstrapping Process</h2>
+<div class="ulist">
+<ul>
+<li>Calculate range(s) of new node, notify ring of these pending ranges</li>
+<li>Calculate the node(s) that currently own these ranges and will no longer own them once the bootstrap completes</li>
+<li>Stream the data from these nodes to the bootstrapping node (monitor with nodetool netstats)</li>
+<li>Join the new node to the ring so it can serve traffic</li>
+<li>Length of time it takes to join will depend on the amount of data to be streamed</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Nodes in joining state</p></div>
+<div class="paragraph"><p>How long should this take?</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="what-if-bootstrap-fails">
+<h2>What if bootstrap fails?</h2>
+<div class="paragraph"><p><strong>Two scenarios</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+Bootstrapping node could not even connect to cluster<div class="ulist">
+<ul>
+<li>Fairly easy to deal with</li>
+<li>something fundamental like couldn&#8217;t find cluster</li>
+<li>Examine the log file to understand what&#8217;s going on firstly(What types of things, error conditions it should be flagged as soon in process, if
+bootstrap), change config and try again</li>
+</ul>
+</div></p></li>
+<li><p>
+Streaming portion fails<div class="ulist">
+<ul>
+<li>node exists in cluster in joining state</li>
+<li><strong>nodetool upgrade</strong>, <strong>nodetool update</strong> to rebootstrap data</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="nodetool-cleanup">
+<h2>Nodetool Cleanup</h2>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="bootstrap\broom" height="360" src="images/cassandra/operations/node-operations/bootstrap/broom.png" width="221" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>Perform cleanup after a bootstrap on the OTHER nodes.</li>
+<li><strong>You don&#8217;t have to do this</strong></li>
+<li>Reads all SSTables to make sure there is no token out of range for that particular node.</li>
+<li>If it&#8217;s out of range it just does a copy.</li>
+<li>If you don&#8217;t run clean up, will get picked up through compaction over time.</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Since we&#8217;ve been considering adding new nodes to our cluster, we should probably talk about nodetool cleanup in the same breathe</p></div>
+<div class="paragraph"><p>When a node is added to a Cassandra cluster or an existing node is moved to a
+new position on the token ring, other systems still retain copies of data they are not responsible for</p></div>
+<div class="paragraph"><p>Nodetool cleanup removes data that does not belong on this node. We basically recovering disk space.</p></div>
+<div class="paragraph"><p>Cleanup is intensive because it has to examine large portions of the data on disk</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>What does a cleanup operation look like?</strong></p></div>
+<div class="paragraph"><p><span class="image"><img alt="bootstrap\cleanup" height="629" src="images/cassandra/operations/node-operations/bootstrap/cleanup.png" width="1021" /></span></p></div>
+<div class="paragraph"><p>Cleanup is basically a compaction!</p></div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Clean keyspace by writing new SSTables by skipping the keys that no longer belong on the node</p></div>
+<div class="paragraph"><p>Every SStable is rewritten, therefore largest SSTable dictates the amount of space needed for operation</p></div>
+<div class="paragraph"><p>All SSTables are cleaned one table at a time, and if an SSTable is already clean, cleanup operation skips it</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>How do we run a cleanup operation</strong></p></div>
+<div class="ulist">
+<ul>
+<li>The nodetool cleanup command cleans up all data in a keyspace and table(s) that are specified</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>bin/nodetool [options] cleanup -- &lt;keyspace&gt; (&lt;table&gt;)</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li><p>
+Use flags to specify:<div class="ulist">
+<ul>
+<li>-h [host] | [IP address]</li>
+<li>-p port</li>
+<li>-pw password</li>
+<li>-u username</li>
+</ul>
+</div></p></li>
+<li>nodetool cleanup command will clean all keyspaces if no keyspace is specified</li>
+</ul>
+</div>
+</section>
+<section class="slide transition-green" id="cassandra-operations-node-operations-remove-node">
+<h2>Removing a Node</h2>
+
+</section>
+<section class="slide" id="why-would-i-remove-a-node">
+<h2>Why would I remove a node?</h2>
+<div class="paragraph"><p><strong>Two very different scenarios:</strong></p></div>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="remove node\node cracked" src="images/cassandra/operations/node-operations/remove-node/node_cracked.svg" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>You&#8217;re going to reduce capacity, need to decommission (some sort of operational requirement)</li>
+<li>The node is offline and will never come back online</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="removing-a-live-node-from-the-cluster">
+<h2>Removing a live node from the cluster</h2>
+<div class="ulist">
+<ul>
+<li>Perhaps you want to decrease the size of your cluster.</li>
+<li>Or perhaps you might want to swap out an older machine with a newer machine.</li>
+<li>Decommissioning a node will assign the ranges of the old node to other nodes
+and replicate the appropriate data on the new nodes.</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Perhaps you want to decrease the size of your cluster</p></div>
+<div class="paragraph"><p>Or perhaps you might want to swap out an older machine with a newer machine</p></div>
+<div class="paragraph"><p>Decommissioning a node will assign the ranges of the old node to other nodes
+and replicate the appropriate data on the new nodes</p></div>
+<div class="paragraph"><p>Either way, data will be streamed from the decommissioned node to the new node(s)</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><span class="image" style="float: left"><img alt="remove node\dicommission cluster" src="images/cassandra/operations/node-operations/remove-node/dicommission_cluster.svg" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>Decommissioned node&#8217;s data will be streamed from the decommissioning node itself.</li>
+<li>Once data has been moved to other nodes, the process for removing or replacing is
+similar for both.</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Decommissioned node&#8217;s data will be streamed from the decommissioning node itself</p></div>
+<div class="paragraph"><p>Once data has been moved to other nodes, the process for removing or replacing is
+ similar for both</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="when-a-node-is-decommissioned">
+<h2>When a node is decommissioned</h2>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="remove node\dicommission cluster" src="images/cassandra/operations/node-operations/remove-node/dicommission_cluster.svg" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>Node is marked as ''LEAVING'' and will stream data to other live nodes.</li>
+<li>The data directories will still exist&#8212; remove these if the node will go back
+into production!</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Node will show status as leaving in nodetool status</p></div>
+<div class="paragraph"><p>Once node is done decomissioning, will no longer be seen when you issue the nodetool
+status command</p></div>
+<div class="paragraph"><p>The data directories will still exist and you need to remove these if the node
+ will go back into production</p></div>
+<div class="paragraph"><p>Leaving the data in place will cause confusion if node is brought back into the ring</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>The Cassandra JVM is still running&#8212; but with Gossip, Thrift and Native Transport ports all down.</strong></p></div>
+<div class="ulist">
+<ul>
+<li>This allows admin to hook up a JMX client to analyze the metrics maintained in the JVM.</li>
+<li>Then the JVM process can be shutdown manually.</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="decommission-a-node-using-nodetool">
+<h2>Decommission a node using nodetool</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>bin/nodetool [options] decommission</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>Removes node specified by host id</li>
+</ul>
+</div>
+<div class="paragraph"><p>Flags:</p></div>
+<div class="ulist">
+<ul>
+<li>-h [host]|[IP address]</li>
+<li>-p port</li>
+<li>-pw password</li>
+<li>-u username</li>
+<li>Monitor progress with nodetool netstats</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="can-we-remove-a-node">
+<h2>Can we remove a node?</h2>
+<div class="ulist">
+<ul>
+<li>Before doing anything, check nodetool status to see the state of the node in question.</li>
+</ul>
+</div>
+<div class="paragraph"><p><span class="image"><img alt="ops nodetool status arrow 1" height="246" src="images/cassandra/operations/node-operations/remove-node/ops_nodetool_status_arrow_1.png" width="1105" /></span></p></div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Before doing anything else, checking nodetool status to see the state of the node is a good idea.</p></div>
+<div class="paragraph"><p>If the node is up, run a nodetool decommission. We&#8217;ll be dicussing decommission a bit later.</p></div>
+<div class="paragraph"><p>If the node is down, we can choose the appropriate option for removal.</p></div>
+<div class="paragraph"><p>We should take note of the Host ID at this point. We will need it to remove the node.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>If the node is down (and not coming back online), choose the appropriate option:</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+Remove the node using the <strong>nodetool removenode</strong> command.<div class="ulist">
+<ul>
+<li>adjust your tokens to avoid creating a hot spot if using single-token nodes.</li>
+</ul>
+</div></p></li>
+<li>If removenode fails, run <strong>nodetool assassinate</strong>.</li>
+<li><strong>nodetool repair</strong> should be run once the node is removed from the cluster.</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>If the cluster uses vnodes, remove the node using the nodetool removenode command.</p></div>
+<div class="paragraph"><p>If the cluster does not use vnodes, before running the nodetool removenode command,
+adjust your tokens to evenly distribute the data across the remaining nodes to
+avoid creating a hot spot.</p></div>
+<div class="paragraph"><p>If removenode fails, run nodetool assassinate. This is last resort option if nodetool is
+not successful in remvoving the node from the cluster.</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="using-nodetool-removenode">
+<h2>Using nodetool removenode</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>bin/nodetool [options] removenode [host id]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li><p>
+Flags:<div class="ulist">
+<ul>
+<li>-h [host] | [IP address]</li>
+<li>-p port</li>
+<li>-pw password</li>
+<li>-u username</li>
+</ul>
+</div></p></li>
+<li><p>
+Additional arguments:<div class="ulist">
+<ul>
+<li>status</li>
+<li>forces</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+
+</div>
+</div>
+</section>
+<section class="slide transition-green" id="cassandra-operations-node-operations-replace-node">
+<h2>Replace Downed Nodes</h2>
+
+</section>
+<section class="slide" id="the-pros-of-replacing-a-downed-node">
+<h2>The pros of replacing a downed node</h2>
+<div class="paragraph"><p><span class="image"><img alt="replace node\swap node" src="images/cassandra/operations/node-operations/replace-node/swap_node.png" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>You don&#8217;t have to move the data twice</li>
+<li>Backup for a node will work for a replaced node, because same tokens are used to bring replaced node into cluster</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>You can replace a downed node</p></div>
+<div class="paragraph"><p>And there are cool benefits to doing it</p></div>
+<div class="paragraph"><p>You don’t have to move the data twice</p></div>
+<div class="paragraph"><p>Backup for a node will work for a replaced node,
+ same tokens are used to bring replaced node into cluster</p></div>
+<div class="paragraph"><p>These are important operations considerations</p></div>
+</div>
+</div>
+</section>
+<section class="slide" id="replacing-a-downed-node-using-nodetool">
+<h2>Replacing a downed node using nodetool</h2>
+<div class="paragraph"><p><span class="image"><img alt="replace node\downed  node" height="217" src="images/cassandra/operations/node-operations/replace-node/downed _node.png" width="917" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>First, find the ip address of the down node using <strong>nodetool status</strong>.</li>
+<li>In the node, open the cassandra-env.sh file</li>
+<li>Swap in the IP address of dead node as the replace_address value in the JVM option.
+This will enable bootstrapping of the new node.</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="ulist">
+<ul>
+<li>Use <strong>nodetool removenode</strong> to remove the dead node</li>
+<li>Use the force option if necessary (<strong>nodetool assassinate</strong>)</li>
+<li>You can monitor the process using <strong>nodetool netstats</strong></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="what-if-the-node-was-also-a-seed-node">
+<h2>What if the node was also a seed node?</h2>
+<div class="paragraph"><p><strong>Considerations</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Need to add to list of seeds in <strong>cassandra.yaml</strong></li>
+<li>Cassandra will not allow seed node to autobootrap</li>
+<li>Thus, will have to run repair on new seed node to do so!</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Steps:</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Add a new node making the necessary changes to the cassandra.yaml file</li>
+<li>New seed node IP address will need to be added to the list of seed nodes in the cassandra.yaml file for each node</li>
+<li>Start Cassandra on new seed node</li>
+<li>Run <strong>nodetool repair</strong> on the new seed node to manually bootstrap</li>
+<li>Remove the old seed node using <strong>nodetool removenode</strong> with the Host ID of the downed node</li>
+<li>Run <strong>nodetool cleanup</strong> on previously existing nodes</li>
+</ul>
+</div>
+</section>
+<section class="slide transition-green" id="cassandra-operations-node-operations-repair">
+<h2>Repair</h2>
+
+</section>
+<section class="slide" id="what-is-a-repair">
+<h2>What is a repair?</h2>
+<div class="paragraph"><p><strong>Repair is a deliberate action to cope with cluster entropy</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Entropy can arise from nodes that were down longer than the hint window, dropped mutations, or other causes</li>
+<li>A repair operates on all of the nodes in a replica set by default</li>
+<li>Ensures that all replicas have identical copies of a given partition</li>
+<li><p>
+Consists of two phases:<div class="ulist">
+<ul>
+<li>Build Merkle tree of the data per partition</li>
+<li>Replicas then compare the differences between their trees and stream the differences to each other as needed</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="a-merkle-tree-exchange">
+<h2>A Merkle tree exchange</h2>
+<div class="paragraph"><p><span class="image"><img alt="repair\merkel trees" height="162" src="images/cassandra/operations/node-operations/repair/merkel_trees.svg" width="819" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>Start with the root of the tree (a list of one hash value)</li>
+<li>The origin sends the list of hashes at the current level</li>
+<li>The destination diffs the list of hashes against its own, then requests subtrees that are different</li>
+<li>If there are no differences, the request can terminate</li>
+<li>Repeat steps 2 and 3 until leaf nodes are reached</li>
+<li>The origin sends the values of the keys in the resulting set</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="why-is-repair-necessary">
+<h2>Why is repair necessary?</h2>
+<div class="ulist">
+<ul>
+<li>A node&#8217;s data can get inconsistent over time (Repair is just a maintenance action in this case)</li>
+<li>If a node goes down for some time, it misses writes and will need to catch up</li>
+<li><p>
+Sometimes it is best to repair a node:<div class="ulist">
+<ul>
+<li>If the node has been down longer than the length specified in <strong>max_hint_window_in_ms</strong>, the node is out of sync</li>
+<li>Depending on amount of data, might be faster to repair</li>
+</ul>
+</div></p></li>
+<li><p>
+Sometimes it is better to bring the node back as a new node:<div class="ulist">
+<ul>
+<li>If there is a significant amount of data, might be faster just to bring in a new node and stream data just to that node</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="what-are-incremental-repairs">
+<h2>What are incremental repairs?</h2>
+<div class="paragraph"><p><span class="image"><img alt="repair\incremental repairs" height="338" src="images/cassandra/operations/node-operations/repair/incremental_repairs.svg" width="547" /></span></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+To avoid the need for constant tree construction, incremental repairs have been introduced.<div class="ulist">
+<ul>
+<li>Idea is to persist already repaired data, and only calculate merkle trees for sstables that haven&#8217;t previously undergone repairs</li>
+<li>This allows the repair process to stay performant and lightweight</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="what-are-incremental-repairs-2">
+<h2>What are incremental repairs?</h2>
+<div class="ulist">
+<ul>
+<li>Incremental repairs begin with the repair leader sending out a prepare message to its peers</li>
+<li><p>
+Each node builds a Merkle tree from the unrepaired sstables<div class="ulist">
+<ul>
+<li>This can be distinguished by the <strong>repairedAt</strong> field in each sstable&#8217;s metadata.</li>
+</ul>
+</div></p></li>
+<li><p>
+Once the leader receives a merkle tree from each node, it compares the trees and issues streaming requests<div class="ulist">
+<ul>
+<li>This is just as in the classic repair case.</li>
+</ul>
+</div></p></li>
+<li><p>
+Finally, the leader issues an anticompaction command<div class="ulist">
+<ul>
+<li>Anticompaction is the process of segregating repaired and unrepaired ranges into separate sstables.</li>
+<li>repaired sstables are written with a new repairedAt field denoting the time of repair</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="what-are-best-practices-for-repair">
+<h2>What are best practices for repair?</h2>
+<div class="ulist">
+<ul>
+<li>Run repair weekly</li>
+<li>Run repair on a small number of nodes at a time</li>
+<li>Schedule for low-usage hours</li>
+<li>Run repair on a partition or subrange of a partition</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="primary-and-secondary-ranges">
+<h2>Primary and secondary ranges</h2>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="repair\repair ring" src="images/cassandra/operations/node-operations/repair/repair_ring.svg" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>Primary Range (inside ring)--''first'' node that data is stored on, based on the partition key</li>
+<li>Secondary Range (outside rings)--additional replicas of that same data</li>
+<li>What are the implications for repair?</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="impact-of-range-on-best-practices">
+<h2>Impact of range on best practices</h2>
+<div class="ulist">
+<ul>
+<li><p>
+Repair a range of data (nodetool repair --partitioner&#8212;&#8203;range)<div class="ulist">
+<ul>
+<li>Repairs only the primary range of the node</li>
+<li>Otherwise, a repair job can take two or three times longer, depending on the number of replicas</li>
+</ul>
+</div></p></li>
+<li><p>
+Repair subrange (nodetool --start-token &lt;token&gt; --end-token &lt;token&gt;)<div class="ulist">
+<ul>
+<li>Repairs only a portion of the data belonging to a node</li>
+<li>Merkle tree precision is fixed, so many partitions per node may result overstreaming</li>
+<li>Important for repairing single-token nodes</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="perform-a-repair-using-nodetool">
+<h2>Perform a repair using nodetool</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>nodetool &lt;options&gt; repair</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li><p>
+Options:<div class="ulist">
+<ul>
+<li>--dc &lt;dc_name&gt; identify data centers</li>
+<li>--et &lt;end_token&gt; used when repairing a subrange</li>
+<li>--local repairs only in the local data center</li>
+<li>--par (parallel repair)</li>
+<li>--pr (partitioner-range) repairs only primary range</li>
+<li>--st &lt;start_token&gt; used when repairing a subrange</li>
+<li>&#8201;&#8212;&#8201;&lt;keyspace&gt; &lt;table&gt;</li>
+<li>--inc (incremental) do an incremental repair</li>
+</ul>
+</div></p></li>
+<li>If you don&#8217;t specify an option, sequential is the default</li>
+</ul>
+</div>
+</section>
+<section class="slide transition-green" id="cassandra-operations-node-operations-sstable-split">
+<h2>sstablesplit</h2>
+
+</section>
+<section class="slide" id="when-would-we-need-sstablesplit">
+<h2>When would we need sstablesplit?</h2>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="sstable split\dino" src="images/cassandra/operations/node-operations/sstable-split/dino.png" /></span></p></div>
+<div class="ulist">
+<ul>
+<li>You did a <strong>nodetool compact</strong> (major compaction)</li>
+<li>Maybe you used SizeTieredCompactionStrategy was used for a major compaction</li>
+<li>This would result in a excessively large SSTable.</li>
+<li>Good idea to split the table because won&#8217;t get compacted again until the next huge compaction.</li>
+<li>Using size tiered compaction, we may have gotten some really large files over time.</li>
+<li>May find yourself with a 200GB file that you need to split up.</li>
+<li>It&#8217;s an anti-compaction in a way.</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="usage">
+<h2>Usage</h2>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="sstable split\stop2" src="images/cassandra/operations/node-operations/sstable-split/stop2.png" /></span></p></div>
+<div class="paragraph"><p>Firstly, Cassandra must be stopped to use this tool:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>$ sudo service cassandra stop</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>You do this online and it will be bad!!</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>$ sstablesplit [options] &lt;filename&gt; [&lt;filename&gt;]*</code></pre>
+</div>
+</div>
+<div class="paragraph"><p><span class="image" style="float: left"><img alt="sstable split\sstablesplit options" src="images/cassandra/operations/node-operations/sstable-split/sstablesplit-options.png" /></span></p></div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Example:</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>$ sstablesplit -s 40 /var/lib/cassandra/data/data/killrvideo/users/*</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>Take all my files in the killrvideo keyspace and make all of them 40mb</li>
+</ul>
+</div>
+</section>
+<section class="slide transition-purple" id="exercise-sstable-split">
+<h2>Exercise --sstable-split</h2>
+
+</section>
+<section class="slide transition-purple" id="courses-DS210-exercise-placeholders-exercise-2">
+<h2>Exercise 2&#8212;&#8203;sstable-split</h2>
+
+</section>
+<div aria-role="navigation">
+<a class="deck-prev-link" href="#" title="Previous">
+<i class="icon-chevron-with-circle-left"></i>
+</a>
+<a class="deck-next-link" href="#" title="Next">
+<i class="icon-chevron-with-circle-right"></i>
+</a>
+</div>
+<form action="." class="goto-form" method="get">
+<label for="goto-slide">Go to Slide:</label>
+<input id="goto-slide" list="goto-datalist" name="slidenum" type="text" />
+<datalist id="goto-data-list"></datalist>
+<input type="submit" value="Go" />
+</form>
+</div>
+<script src="deck.js/jquery.min.js"></script>
+<script src="deck.js/d3.v2.js"></script>
+<script src="deck.js/jquery-ui.min.js"></script>
+<script src="deck.js/core/deck.core.js"></script>
+<script src="deck.js/extensions/scale/deck.scale.js"></script>
+<script src="deck.js/extensions/goto/deck.goto.js"></script>
+<script src="deck.js/extensions/navigation/deck.navigation.js"></script>
+<script src="deck.js/extensions/split/deck.split.js"></script>
+<script src="deck.js/extensions/animation/deck.animation.js"></script>
+<script src="deck.js/extensions/deck.js-notes/deck.notes.js"></script>
+<script src="deck.js/extensions/goto/deck.goto.js"></script>
+<script src="deck.js/extensions/clone/deck.clone.js"></script>
+<script src="deck.js/extensions/svg/svg.min.js"></script>
+<script src="js/module-2.js"></script>
+<footer>
+<div class="flex-element deck-course">
+<p>&copy; 2016 DataStax. Use only with permission. &bull;
+<span class="course-title">Node Operations</span></p>
+</div>
+<div class="flex-element deck-brand">
+<a href="http://academy.datastax.com" target="blank">DataStax Academy</a>
+</div>
+<div class="deck-progressbar">
+<span></span>
+</div>
+</footer>
+<script type="text/javascript">
+  //<![CDATA[
+    (function($, deck, undefined) {
+      $.deck.defaults.keys['previous'] = [8, 33, 37, 39];
+      $.deck.defaults.keys['next'] = [13, 32, 34, 39];
+    
+      $.extend(true, $[deck].defaults, {
+          countNested: false
+      });
+    
+      $.deck('.slide');
+      $.deck('disableScale');
+    })(jQuery, 'deck');
+  //]]>
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+    $(document).bind('deck.change', function(event, from, to) {
+      var width = to / ($.deck('getSlides').length - 1) * 100;
+      $('.deck-progressbar span').css('width', width + '%');
+    });
+  //]]>
+</script>
+</body>
+</html>

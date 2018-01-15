@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="464px" height="464px" viewBox="0 0 464 464" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.7 (28169) - http://www.bohemiancoding.com/sketch -->
+    <title>pie-2016-05-17 10-22-32</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="pie-2016-05-17-10-22-32">
+            <rect id="Rectangle-path" fill="#FFFFFF" x="0" y="0" width="464" height="464"></rect>
+            <path d="M232,232 L232,23 C332.818184,23 419.266455,94.9723352 437.538733,194.12086 C455.811011,293.269386 400.698492,391.330239 306.50364,427.269577 L232,232" id="Shape" stroke="#FFFFFF" fill="#D92ED9"></path>
+            <path d="M232,232 L63.5574098,108.274118 C102.935628,54.6639192 165.4816,23 232,23 L232,232" id="Shape" stroke="#FFFFFF" fill="#2D4A13"></path>
+            <path d="M232,232 L70.2252809,364.325131 C9.83569548,290.495556 7.09228746,185.146728 63.5574098,108.274118 L232,232" id="Shape" stroke="#FFFFFF" fill="#24124A"></path>
+            <path d="M232,232 L306.50364,427.269577 C222.407061,459.355995 127.21363,433.996509 70.2252809,364.325131 L232,232" id="Shape" stroke="#FFFFFF" fill="#422480"></path>
+            <ellipse id="Oval" fill="#FFFFFF" cx="232.5" cy="232.5" rx="176.5" ry="178.5"></ellipse>
+        </g>
+    </g>
+</svg>

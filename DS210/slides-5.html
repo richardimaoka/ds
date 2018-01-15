@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=" http-equiv="Content-Type" />
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="Asciidoctor 1.5.3" name="generator" />
+<title>Import and Export</title>
+<link href="deck.js/themes/style/font.css" rel="stylesheet" />
+<style>
+.conum { display: inline-block; color: white !important; background-color: #222222; -webkit-border-radius: 100px; border-radius: 100px; text-align: center; width: 1.2em; height: 1.2em; font-size: 0.9em; font-weight: bold; line-height: 1.2; font-family: Arial, sans-serif; font-style: normal; position: relative; top: -0.1em; }
+.conum * { color: white !important; }
+.conum + b { display: none; }
+.conum:after { content: attr(data-value); }
+.conum:not([data-value]):empty { display: none; }
+.colist table td:first-of-type { padding-right: 0.25em; }
+</style>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{color:rgba(0,0,0,.4)}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top;line-height:1.45}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+<link href="deck.js/core/deck.core.css" rel="stylesheet" />
+<link href="deck.js/extensions/scale/deck.scale.css" media="screen" rel="stylesheet" />
+<link href="deck.js/extensions/goto/deck.goto.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/style/datastax.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/transition/fade.css" media="screen" rel="stylesheet" />
+<link href="deck.js/core/print.css" media="print" rel="stylesheet" />
+<script src="deck.js/modernizr.custom.js"></script>
+</head>
+<body class="article">
+<div class="deck-container">
+<section class="slide" id="title-slide">
+<h1>Import and Export</h1>
+</section>
+<section class="slide transition-green" id="cassandra-operations-import-export-cql-copy">
+<h2>CQL COPY</h2>
+<div style="page-break-after: always"></div>
+<div class="ulist">
+<ul>
+<li>Imports and exports delimited data to and from Cassandra</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>COPY table_name ( column, ...)
+FROM ( 'file_name1', 'file_name2', ... | STDIN )
+WITH option = 'value' AND ...
+
+COPY table_name ( column , ... )
+TO ( 'file_name1', 'file_name2', ... | STDOUT )
+WITH option = 'value' AND ...</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>COPY uses an argument of one or more comma-separated file names</li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>COPY is a cqlsh command that Imports and exports delimited data to and from Cassandra.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>COPY FROM a delimited file</strong></p></div>
+<div class="paragraph"><p><strong>Why would we want to do this?</strong></p></div>
+<div class="ulist">
+<ul>
+<li>In a production database, inserting columns and column values programmatically is more practical than using cqlsh</li>
+<li>But often testing queries using this SQL-like shell is very convenient</li>
+<li>A delimited file is useful if several records need inserting</li>
+<li>While not strictly an INSERT command, it is a common method for inserting data</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Some rules:</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Cassandra expects every row in the delimited input to contain the same number of columns</li>
+<li>The number of columns in the delimited input is the same as the number of columns in the Cassandra table</li>
+<li>Empty data for a column is assumed by default as NULL value</li>
+<li>COPY FROM is intended for importing small datasets (a few million rows or less) into Cassandra</li>
+<li>For importing larger datasets, use the Cassandra bulk loader</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Procedure</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+Locate your delimited file and check options to use<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>---
+lastname|firstname|email|created_date
+Jones|Bob|bob@example.com|2016-02-03
+Walsh|Gary|gary@example.com|2016-02-04
+Nash|Sue|sue@example.com|2016-02-23
+---</code></pre>
+</div>
+</div></p></li>
+<li>To insert the data, using the COPY command with delimited data:</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>$ COPY killrvideo.users FROM 'users.csv' WITH DELIMITER='|' AND HEADER=TRUE</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="what-do-some-of-these-options-mean">
+<h2>What do some of these options mean?</h2>
+<div class="paragraph"><p><strong>Just some examples</strong></p></div>
+<div class="ulist">
+<ul>
+<li>DELIMITER - Set character that separates fields having newline characters in the file (default is comma (,))</li>
+<li>HEADER - Set true to indicate that first row of the file is a header (default is false)</li>
+<li>CHUNKSIZE - Set the size of chunks passed to worker processes (default value is 1000)</li>
+<li>SKIPROWS - 	The number of rows to skip (default value is 0)</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="cql-copy">
+<h2>CQL COPY</h2>
+<div class="paragraph"><p><strong>COPY TO a delimited file</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Assuming  you have this user table in CQL:</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>cqlsh&gt; SELECT * FROM users.killrvideo;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>After inserting data into the table, you can copy the data to a delimited file in another order by specifying the column names in parentheses after the table name:</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>lastname   |   firstname    | email           | created_date
+-----------+----------------+-----------------+-------------
+    Jones  |      Bob       | bob@example.com | 2016-02-03</code></pre>
+</div>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Assuming  you have this user table in CQL.</p></div>
+<div class="paragraph"><p>After inserting data into the table, you can copy the data to a CSV file in another order by specifying the column names in parentheses after the table name:</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>COPY TO a delimited file</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Copy the data to a delimited file in another order by specifying the column names in parentheses after the table name:</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>COPY users (firstname, lastname, created_date, email) TO 'users.csv'</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="specifying-the-source-or-destination-files">
+<h2>Specifying the source or destination files</h2>
+<div class="ulist">
+<ul>
+<li>Specify the source file of the delimited input or the destination file of the delimited output by a file path.</li>
+<li>You may also use the <strong>STDIN</strong> or <strong>STDOUT keywords</strong> to import from standard input and export to standard output.</li>
+<li>When using stdin, signal the end of the delimited data with a backslash and period ("\.") on a separate line.</li>
+</ul>
+</div>
+</section>
+<section class="slide transition-green" id="cassandra-operations-import-export-sstableloader">
+<h2>sstableloader (Cassandra bulk loader)</h2>
+
+</section>
+<section class="slide" id="sstableloader">
+<h2>sstableloader</h2>
+<div class="ulist">
+<ul>
+<li><p>
+Provides the ability to:<div class="ulist">
+<ul>
+<li>Bulk load external data into a cluster</li>
+<li><p>
+Load pre-existing SSTables into<div class="ulist">
+<ul>
+<li>an existing cluster or new cluster</li>
+<li>a cluster with the same number of nodes or a different number of nodes</li>
+<li>a cluster with a different replication strategy or partitioner</li>
+</ul>
+</div></p></li>
+</ul>
+</div></p></li>
+<li>Very flexible</li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="ulist">
+<ul>
+<li>The sstableloader streams a set of SSTable data files to a live cluster; it does not simply copy the set of SSTables to every node, but transfers the relevant part of the data to each node, conforming to the replication strategy of the cluster</li>
+<li>The table into which the data is loaded does not need to be empty</li>
+<li>If tables are repaired in a different cluster, after being loaded, the tables are not repaired</li>
+</ul>
+</div>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="sstableloader\Front End Loader" src="images/cassandra/operations/import-export/sstableloader/Front_End_Loader.jpg" /></span></p></div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Prerequisites</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+Since sstableloader uses Cassandra gossip to figure out the topology of the cluster, make sure of the following:<div class="ulist">
+<ul>
+<li>The cassandra.yaml in the classpath and properly configured</li>
+<li>At least one node in the cluster is configured as seed</li>
+<li><p>
+The following properties are properly configured in cassandra.yaml for cluster that you are importing into:<div class="ulist">
+<ul>
+<li>cluster_name</li>
+<li>listen_address</li>
+<li>storage_port</li>
+<li>rpc_address</li>
+<li>rpc_port</li>
+</ul>
+</div></p></li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div class="openblock notes">
+<div class="content">
+<div class="paragraph"><p>Because sstableloader uses Cassandra gossip to figure out the topology of the cluster, make sure of the following:</p></div>
+<div class="paragraph"><p>The <strong>cassandra.yaml</strong> configuration file is in the classpath and properly configured.</p></div>
+<div class="paragraph"><p>At least one node in the cluster is configured as seed.</p></div>
+<div class="paragraph"><p>In the cassandra.yaml file, the following properties are properly configured for the cluster that you are importing into.</p></div>
+<div class="paragraph"><p>When using sstableloader to load external data, you must first generate SSTables.</p></div>
+<div class="paragraph"><p>If using DataStax Enterprise, you can use Sqoop to migrate external data to Cassandra.</p></div>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>How does sstableloader work?</strong></p></div>
+<div class="ulist">
+<ul>
+<li>When it goes, it actually reads every single sstable and streams that data back into the cluster</li>
+<li>It repartitions the data, the snitches get involved so that the data will fall into the correct place</li>
+<li>Great for switching between non-like clusters, as it can restream the data and repartition it (going from a 30 to 40 node cluster, for example)</li>
+<li>Example of usage: To bulk load the files, specify the path to killrvideo/users/ in the target cluster:</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre><code>$ sstableloader -d 110.82.155.1 /var/lib/cassandra/data/killrvideo/users/</code></pre>
+</div>
+</div>
+</section>
+<section class="slide transition-green" id="cassandra-operations-import-export-sstabledump">
+<h2>sstabledump</h2>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Allows you to see the raw data of a SSTable in a text format.</strong></p></div>
+<div class="ulist">
+<ul>
+<li>Dumps the contents of the specified SSTable in the JSON format</li>
+<li>Maybe you&#8217;re curious about things like timestamps</li>
+<li>Only way you can actually see the inner workings of an SSTable</li>
+<li>You may wish to flush the table to disk (using nodetool flush) before dumping its contents</li>
+</ul>
+</div>
+<div class="paragraph"><p><span class="image" style="float: right"><img alt="sstabledump\dumptruck" src="images/cassandra/operations/import-export/sstabledump/dumptruck.png" /></span></p></div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Cassandra 3.0 sstabledump output</strong></p></div>
+<div class="paragraph"><p><span class="image"><img alt="sstabledump\sstabledump" height="443" src="images/cassandra/operations/import-export/sstabledump/sstabledump.png" width="822" /></span></p></div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Internal Representation Format</strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>$ sstabledump data/data/killrvideo/users-b75e90f0226811e6a172cfc782e39035/ma-1-big-Data.db -d
+
+[14c532ac-f5ae-479a-9d0a-36604732e01d]@0 Row[info=[ts=1464175401324444] ]:  |
+[created_date=2016-05-11 00:00-0230 ts=1464175401324444], [email=jane@example.com ts=1464175401324444], [firstname=Jane ts=1464175401324444], [lastname=Doe ts=1464175401324444]</code></pre>
+</div>
+</div>
+</section>
+<section class="slide transition-purple" id="exercise-sstabledump">
+<h2>Exercise --sstabledump</h2>
+
+</section>
+<section class="slide transition-purple" id="courses-DS210-exercise-placeholders-exercise-5">
+<h2>Exercise 5&#8212;&#8203;sstabledump</h2>
+
+</section>
+<section class="slide transition-green" id="cassandra-operations-import-export-spark">
+<h2>Spark</h2>
+
+</section>
+<section class="slide" id="span-class-small-use-spark-to-load-data-into-cassandra-span">
+<h2><span class="small">Use Spark to load data into Cassandra</span></h2>
+<div class="paragraph"><p><strong>Spark provides convenient functionality for loading large external
+datasets into Cassandra tables in parallel</strong></p></div>
+<div class="paragraph"><p><strong>Ingesting files in CSV, TSV, JSON, XML, and other formats</strong></p></div>
+<div class="ulist">
+<ul>
+<li><p>
+If file is stored in Cassandra File System<div class="ulist">
+<ul>
+<li>File blocks are ingested concurrently (64 MBs per block)</li>
+<li>May still need to re-partition to optimize</li>
+</ul>
+</div></p></li>
+<li><p>
+If file is stored in a local file system, to achieve a desired level of parallelism<div class="ulist">
+<ul>
+<li>Use Spark to repartition the dataset or</li>
+<li>Use Spark&#8217;s partitionBy to pre-partition the dataset by a Cassandra table partition
+key</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div style="page-break-after: always"></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>case class User (userid: java.util.UUID,
+                 firstname: String,
+                 lastname: String,
+                 email: String,
+                 created_date: java.util.Date)
+val users =
+sc.textFile("cfs:.../users.csv")
+  .repartition(2 * sc.defaultParallelism)
+  .map( line =&gt; line.split(",") match
+ { case Array(id, firstname, lastname, email, created_date) =&gt;
+User(java.util.UUID.fromString(id),
+     firstname,
+     lastname,
+     email,
+     new java.text.SimpleDateFormat("yyyy-mm-dd").parse(created_date))
+ } )
+users.saveToCassandra("killrvideo", "users")</code></pre>
+</div>
+</div>
+<div style="page-break-after: always"></div>
+<div class="paragraph"><p><strong>Loading a CSV file into a Cassandra table with <u>validation</u></strong></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>val beforeCount = sc.cassandraTable("killrvideo", "users").count
+
+val users =
+sc.textFile("file:///home/student/users.csv")
+  .repartition(2 * sc.defaultParallelism)
+  .cache // The RDD is used in two actions
+
+val loadCount = users.count
+
+users.map(...).saveToCassandra("killrvideo", "users")
+
+val afterCount = sc.cassandraTable("killrvideo", "users").count
+
+if (loadCount - (afterCount - beforeCount) &gt; 0)
+  println ("Errors or upserts - further validation required")</code></pre>
+</div>
+</div>
+</section>
+<div aria-role="navigation">
+<a class="deck-prev-link" href="#" title="Previous">
+<i class="icon-chevron-with-circle-left"></i>
+</a>
+<a class="deck-next-link" href="#" title="Next">
+<i class="icon-chevron-with-circle-right"></i>
+</a>
+</div>
+<form action="." class="goto-form" method="get">
+<label for="goto-slide">Go to Slide:</label>
+<input id="goto-slide" list="goto-datalist" name="slidenum" type="text" />
+<datalist id="goto-data-list"></datalist>
+<input type="submit" value="Go" />
+</form>
+</div>
+<script src="deck.js/jquery.min.js"></script>
+<script src="deck.js/d3.v2.js"></script>
+<script src="deck.js/jquery-ui.min.js"></script>
+<script src="deck.js/core/deck.core.js"></script>
+<script src="deck.js/extensions/scale/deck.scale.js"></script>
+<script src="deck.js/extensions/goto/deck.goto.js"></script>
+<script src="deck.js/extensions/navigation/deck.navigation.js"></script>
+<script src="deck.js/extensions/split/deck.split.js"></script>
+<script src="deck.js/extensions/animation/deck.animation.js"></script>
+<script src="deck.js/extensions/deck.js-notes/deck.notes.js"></script>
+<script src="deck.js/extensions/goto/deck.goto.js"></script>
+<script src="deck.js/extensions/clone/deck.clone.js"></script>
+<script src="deck.js/extensions/svg/svg.min.js"></script>
+<script src="js/module-5.js"></script>
+<footer>
+<div class="flex-element deck-course">
+<p>&copy; 2016 DataStax. Use only with permission. &bull;
+<span class="course-title">Import and Export</span></p>
+</div>
+<div class="flex-element deck-brand">
+<a href="http://academy.datastax.com" target="blank">DataStax Academy</a>
+</div>
+<div class="deck-progressbar">
+<span></span>
+</div>
+</footer>
+<script type="text/javascript">
+  //<![CDATA[
+    (function($, deck, undefined) {
+      $.deck.defaults.keys['previous'] = [8, 33, 37, 39];
+      $.deck.defaults.keys['next'] = [13, 32, 34, 39];
+    
+      $.extend(true, $[deck].defaults, {
+          countNested: false
+      });
+    
+      $.deck('.slide');
+      $.deck('disableScale');
+    })(jQuery, 'deck');
+  //]]>
+</script>
+<script type="text/javascript">
+  //<![CDATA[
+    $(document).bind('deck.change', function(event, from, to) {
+      var width = to / ($.deck('getSlides').length - 1) * 100;
+      $('.deck-progressbar span').css('width', width + '%');
+    });
+  //]]>
+</script>
+</body>
+</html>
